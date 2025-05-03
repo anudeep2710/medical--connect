@@ -99,15 +99,15 @@
             id="doctorId"
             formControlName="doctorId"
             class="form-input"
-            [ngClass]="{'error': bookingForm.get('doctorId')?.invalid && bookingForm.get('doctorId')?.touched}"
+            [ngClass]="{'border-red-500': !validateField('doctorId')}"
             (change)="onDoctorChange()">
             <option value="" disabled selected>Select a doctor</option>
             <option *ngFor="let doctor of doctors" [value]="doctor.id">
               Dr. {{ doctor.fullName }} - {{ doctor.specialization }}
             </option>
           </select>
-          <div *ngIf="bookingForm.get('doctorId')?.invalid && bookingForm.get('doctorId')?.touched" class="form-error">
-            Please select a doctor
+          <div *ngIf="!validateField('doctorId')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('doctorId') }}
           </div>
         </div>
         
@@ -159,12 +159,12 @@
             id="date"
             formControlName="date"
             class="form-input"
-            [ngClass]="{'error': bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched}"
+            [ngClass]="{'border-red-500': !validateField('date')}"
             [min]="today.toISOString().split('T')[0]"
             [max]="maxDate.toISOString().split('T')[0]"
             (change)="onDateChange()">
-          <div *ngIf="bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched" class="form-error">
-            Please select a valid date
+          <div *ngIf="!validateField('date')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('date') }}
           </div>
         </div>
         
@@ -189,6 +189,9 @@
                 class="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500">
               <label for="inPerson" class="ml-2 text-sm text-gray-700">In Person</label>
             </div>
+          </div>
+          <div *ngIf="!validateField('type')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('type') }}
           </div>
         </div>
         
@@ -223,8 +226,8 @@
           </div>
           
           <input type="hidden" formControlName="timeSlot">
-          <div *ngIf="bookingForm.get('timeSlot')?.invalid && bookingForm.get('timeSlot')?.touched" class="form-error mt-2">
-            Please select a time slot
+          <div *ngIf="!validateField('timeSlot')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('timeSlot') }}
           </div>
         </div>
         
@@ -251,55 +254,42 @@
       <div *ngIf="currentStep === 3" class="p-4 sm:p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Confirm Appointment Details</h2>
         
-        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="space-y-4">
             <div>
-              <h4 class="text-xs font-medium text-gray-500 uppercase">Doctor</h4>
+              <h3 class="text-sm font-medium text-gray-500">Doctor</h3>
               <p class="mt-1 text-sm text-gray-900">Dr. {{ selectedDoctor?.fullName }}</p>
-              <p class="text-xs text-gray-500">{{ selectedDoctor?.specialization }}</p>
             </div>
             
             <div>
-              <h4 class="text-xs font-medium text-gray-500 uppercase">Date & Time</h4>
-              <p class="mt-1 text-sm text-gray-900">{{ formatDate(selectedDate) }}</p>
-              <p class="text-xs text-gray-500">
-                {{ selectedTimeSlot ? formatTime(selectedTimeSlot.startTime) + ' - ' + formatTime(selectedTimeSlot.endTime) : '' }}
+              <h3 class="text-sm font-medium text-gray-500">Date & Time</h3>
+              <p class="mt-1 text-sm text-gray-900">
+                {{ bookingForm.get('date')?.value | date:'mediumDate' }} at 
+                {{ formatTime(bookingForm.get('timeSlot')?.value) }}
               </p>
             </div>
             
             <div>
-              <h4 class="text-xs font-medium text-gray-500 uppercase">Appointment Type</h4>
-              <p class="mt-1 text-sm text-gray-900">{{ getAppointmentTypeLabel(bookingForm.get('type')?.value) }}</p>
-            </div>
-            
-            <div>
-              <h4 class="text-xs font-medium text-gray-500 uppercase">Patient</h4>
-              <p class="mt-1 text-sm text-gray-900">{{ currentUser?.fullName }}</p>
-              <p class="text-xs text-gray-500">{{ currentUser?.email }}</p>
+              <h3 class="text-sm font-medium text-gray-500">Appointment Type</h3>
+              <p class="mt-1 text-sm text-gray-900">
+                {{ bookingForm.get('type')?.value === 'VIDEO_CALL' ? 'Video Call' : 'In Person' }}
+              </p>
             </div>
           </div>
         </div>
         
         <div class="mb-6">
-          <label for="reasonForVisit" class="form-label">Reason for Visit</label>
-          <textarea 
-            id="reasonForVisit"
-            formControlName="reasonForVisit"
-            rows="3"
-            placeholder="Please describe your symptoms or reason for this appointment..."
-            class="form-input">
-          </textarea>
-        </div>
-        
-        <div class="mb-6">
-          <label for="notes" class="form-label">Additional Notes</label>
-          <textarea 
-            id="notes"
-            formControlName="notes"
-            rows="2"
-            placeholder="Any additional information you'd like the doctor to know..."
-            class="form-input">
-          </textarea>
+          <label for="reason" class="form-label">Reason for Visit</label>
+          <textarea
+            id="reason"
+            formControlName="reason"
+            rows="4"
+            class="form-input"
+            [ngClass]="{'border-red-500': !validateField('reason')}"
+            placeholder="Please describe your symptoms or reason for the appointment"></textarea>
+          <div *ngIf="!validateField('reason')" class="mt-1 text-sm text-red-600">
+            {{ getErrorMessage('reason') }}
+          </div>
         </div>
         
         <div class="mt-8 flex justify-between">
@@ -311,12 +301,12 @@
           </app-button>
           
           <app-button 
-            type="submit" 
             variant="primary" 
             icon="check"
-            [loading]="isSubmitting"
-            [disabled]="isSubmitting">
-            {{ isReschedule ? 'Reschedule Appointment' : 'Book Appointment' }}
+            iconPosition="right"
+            [disabled]="!validateStep3()"
+            (clicked)="submitBooking()">
+            Confirm Booking
           </app-button>
         </div>
       </div>

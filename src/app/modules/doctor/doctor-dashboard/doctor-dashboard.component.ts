@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AppointmentService } from '../../../core/services/appointment.service';
 import { ChatService } from '../../../core/services/chat.service';
-import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { Appointment } from '../../../core/models/appointment.model';
 import { Message, Chat } from '../../../core/models/chat.model';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
@@ -33,6 +33,7 @@ export class DoctorDashboardComponent implements OnInit {
   doctorStats: DoctorStat[] = [];
   isLoading = true;
   error = '';
+  isDarkMode = false; // Track dark mode state
   
   // Date info for schedule
   today: Date = new Date();
@@ -42,11 +43,26 @@ export class DoctorDashboardComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private chatService: ChatService,
-    private userService: UserService,
+    public authService: AuthService,
     private router: Router
   ) {}
   
   ngOnInit() {
+    console.log("Doctor dashboard initializing...");
+    // Force theme to be visible initially
+    document.documentElement.classList.remove('dark');
+    this.isDarkMode = false;
+    
+    // Check for user's saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      this.isDarkMode = true;
+      document.documentElement.classList.add('dark');
+    }
+    
+    // Alert for debugging
+    alert('Doctor Dashboard initialized! Current theme: ' + (this.isDarkMode ? 'Dark' : 'Light'));
+    
     this.loadDashboardData();
   }
   
@@ -266,11 +282,30 @@ export class DoctorDashboardComponent implements OnInit {
   
   getAppointmentStatusClass(status: string): string {
     switch (status) {
-      case 'CONFIRMED': return 'bg-success-100 text-success-800 border-success-200';
-      case 'PENDING': return 'bg-warning-100 text-warning-800 border-warning-200';
-      case 'COMPLETED': return 'bg-gray-100 text-gray-800 border-gray-200';
-      case 'CANCELLED': return 'bg-danger-100 text-danger-800 border-danger-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'CONFIRMED': return 'bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-300 border-success-200 dark:border-success-800';
+      case 'PENDING': return 'bg-warning-100 dark:bg-warning-900/30 text-warning-800 dark:text-warning-300 border-warning-200 dark:border-warning-800';
+      case 'COMPLETED': return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-600';
+      case 'CANCELLED': return 'bg-danger-100 dark:bg-danger-900/30 text-danger-800 dark:text-danger-300 border-danger-200 dark:border-danger-800';
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-600';
     }
+  }
+  
+  toggleDarkMode() {
+    console.log("Toggle dark mode clicked!");
+    this.isDarkMode = !this.isDarkMode;
+    
+    // Apply dark mode to document body
+    if (this.isDarkMode) {
+      console.log("Setting dark mode ON");
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      console.log("Setting dark mode OFF");
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+    
+    // Alert for debugging
+    alert('Theme toggled! Now in ' + (this.isDarkMode ? 'Dark' : 'Light') + ' mode');
   }
 }

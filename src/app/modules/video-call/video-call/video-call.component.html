@@ -197,7 +197,7 @@
           'bg-danger-600 hover:bg-danger-700': !isAudioEnabled
         }"
         (click)="toggleAudio()">
-        <i [data-feather]="isAudioEnabled ? 'mic' : 'mic-off'" class="h-5 w-5"></i>
+        <i [appFeather]="isAudioEnabled ? 'mic' : 'mic-off'" class="h-5 w-5"></i>
       </button>
       
       <button 
@@ -207,7 +207,7 @@
           'bg-danger-600 hover:bg-danger-700': !isVideoEnabled
         }"
         (click)="toggleVideo()">
-        <i [data-feather]="isVideoEnabled ? 'video' : 'video-off'" class="h-5 w-5"></i>
+        <i [appFeather]="isVideoEnabled ? 'video' : 'video-off'" class="h-5 w-5"></i>
       </button>
       
       <button 
@@ -217,27 +217,27 @@
           'bg-success-600 hover:bg-success-700': isScreenSharing
         }"
         (click)="toggleScreenSharing()">
-        <i [data-feather]="'monitor'" class="h-5 w-5"></i>
+        <i [appFeather]="'monitor'" class="h-5 w-5"></i>
       </button>
       
       <button 
         *ngIf="!isRecording"
         class="p-3 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none"
         (click)="startRecording()">
-        <i [data-feather]="'circle'" class="h-5 w-5 text-danger-500"></i>
+        <i [appFeather]="'circle'" class="h-5 w-5 text-danger-500"></i>
       </button>
       
       <button 
         *ngIf="isRecording"
         class="p-3 rounded-full bg-danger-600 hover:bg-danger-700 focus:outline-none"
         (click)="stopRecording()">
-        <i [data-feather]="'square'" class="h-5 w-5"></i>
+        <i [appFeather]="'square'" class="h-5 w-5"></i>
       </button>
       
       <button 
         class="p-3 rounded-full bg-danger-600 hover:bg-danger-700 focus:outline-none"
         (click)="endCall()">
-        <i [data-feather]="'phone-off'" class="h-5 w-5"></i>
+        <i [appFeather]="'phone-off'" class="h-5 w-5"></i>
       </button>
     </div>
   </div>

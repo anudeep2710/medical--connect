@@ -1,34 +1,44 @@
-import { Directive, ElementRef, Input, OnChanges, SimpleChanges, Renderer2 } from '@angular/core';
-import * as feather from 'feather-icons';
+import { Directive, ElementRef, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 @Directive({
   selector: '[dynamicFeather]',
   standalone: true
 })
-export class DynamicFeatherDirective implements OnChanges {
-  @Input('dynamicFeather') iconName: string = '';
+export class DynamicFeatherDirective implements OnInit, OnChanges {
+  @Input('dynamicFeather') appDynamicFeather: string = '';
+  @Input() size: string = '24';
+  @Input() color: string = 'currentColor';
+  private feather: any;
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(private elementRef: ElementRef) {}
+
+  async ngOnInit() {
+    this.feather = await import('feather-icons');
+    this.updateIcon();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['iconName']) {
+    if (changes['appDynamicFeather'] || changes['size'] || changes['color']) {
       this.updateIcon();
     }
   }
 
   private updateIcon() {
-    if (this.iconName) {
-      // Set the data-feather attribute with the dynamic icon name
-      this.renderer.setAttribute(this.el.nativeElement, 'data-feather', this.iconName);
-      
-      // Replace the icon
-      setTimeout(() => {
-        feather.replace({
-          'stroke-width': 2,
-          width: 24,
-          height: 24
-        });
-      });
+    if (!this.appDynamicFeather || !this.feather) return;
+
+    const icon = this.feather.icons[this.appDynamicFeather];
+    if (!icon) {
+      console.warn(`Feather icon "${this.appDynamicFeather}" not found`);
+      return;
     }
+
+    const svg = icon.toSvg({
+      width: this.size,
+      height: this.size,
+      color: this.color,
+      'stroke-width': 2
+    });
+
+    this.elementRef.nativeElement.innerHTML = svg;
   }
 } 

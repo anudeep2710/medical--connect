@@ -4,9 +4,9 @@
 }
 
 .btn-primary {
-  @apply bg-primary-600 text-white hover:bg-primary-700;
+  @apply bg-primary text-white hover:bg-primary-hover;
 }
 
 .btn-secondary {
-  @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  @apply bg-muted text-text-primary hover:bg-muted dark:bg-muted-dark dark:text-text-primary-dark dark:hover:bg-opacity-80;
 }

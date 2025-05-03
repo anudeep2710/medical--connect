@@ -37,12 +37,33 @@ export class BookAppointmentComponent implements OnInit {
   isLoading = false;
   isSubmitting = false;
   loadingTimeSlots = false;
-  error = '';
-  success = '';
+  error: string | null = null;
+  success: string | null = null;
   
   // Date selection
   today = new Date();
   maxDate = new Date(this.today.getFullYear(), this.today.getMonth() + 3, this.today.getDate());
+  
+  validationMessages = {
+    doctorId: [
+      { type: 'required', message: 'Please select a doctor' }
+    ],
+    date: [
+      { type: 'required', message: 'Please select a date' },
+      { type: 'min', message: 'Date cannot be in the past' },
+      { type: 'max', message: 'Date cannot be more than 3 months in advance' }
+    ],
+    type: [
+      { type: 'required', message: 'Please select an appointment type' }
+    ],
+    timeSlot: [
+      { type: 'required', message: 'Please select a time slot' }
+    ],
+    reason: [
+      { type: 'required', message: 'Please provide a reason for the appointment' },
+      { type: 'minlength', message: 'Reason must be at least 10 characters long' }
+    ]
+  };
   
   constructor(
     private formBuilder: FormBuilder,
@@ -52,6 +73,16 @@ export class BookAppointmentComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.bookingForm = this.createForm();
+
+    // Subscribe to form control changes for immediate validation
+    Object.keys(this.bookingForm.controls).forEach(key => {
+      const control = this.bookingForm.get(key);
+      if (control) {
+        control.valueChanges.subscribe(() => {
+          this.validateField(key);
+        });
+      }
+    });
   }
   
   ngOnInit() {
@@ -78,7 +109,7 @@ export class BookAppointmentComponent implements OnInit {
       date: ['', [Validators.required]],
       timeSlot: ['', [Validators.required]],
       type: ['VIDEO_CALL', [Validators.required]],
-      reasonForVisit: ['', [Validators.maxLength(500)]],
+      reasonForVisit: ['', [Validators.required, Validators.minLength(10)]],
       notes: ['', [Validators.maxLength(1000)]]
     });
   }
@@ -212,6 +243,10 @@ export class BookAppointmentComponent implements OnInit {
     return !!this.bookingForm.get('date')?.valid && !!this.bookingForm.get('timeSlot')?.valid;
   }
   
+  validateStep3(): boolean {
+    return !!this.bookingForm.get('reasonForVisit')?.valid;
+  }
+  
   submitBooking() {
     if (this.bookingForm.invalid) {
       this.bookingForm.markAllAsTouched();
@@ -219,8 +254,8 @@ export class BookAppointmentComponent implements OnInit {
     }
     
     this.isSubmitting = true;
-    this.error = '';
-    this.success = '';
+    this.error = null;
+    this.success = null;
     
     const formValues = this.bookingForm.value;
     const [startTime, endTime] = formValues.timeSlot.split('-');
@@ -288,5 +323,30 @@ export class BookAppointmentComponent implements OnInit {
   
   cancel() {
     this.router.navigate(['/appointments']);
+  }
+
+  validateField(fieldName: string): boolean {
+    const control = this.bookingForm.get(fieldName);
+    if (!control) return false;
+
+    if (control.invalid && (control.dirty || control.touched)) {
+      return false;
+    }
+    return true;
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.bookingForm.get(fieldName);
+    if (!control) return '';
+
+    const messages = this.validationMessages[fieldName as keyof typeof this.validationMessages];
+    if (!messages) return '';
+
+    for (const message of messages) {
+      if (control.hasError(message.type)) {
+        return message.message;
+      }
+    }
+    return '';
   }
 }

@@ -14,90 +14,161 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #1F2937;
-  background-color: #F9FAFB;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-/* Color Variables */
-:root {
-  /* Primary - Blue */
-  --primary-50: #eef9ff;
-  --primary-100: #d9f1ff;
-  --primary-200: #bce4ff;
-  --primary-300: #8dd3ff;
-  --primary-400: #59b8ff;
-  --primary-500: #3499fe;
-  --primary-600: #1e7af5;
-  --primary-700: #1965e1;
-  --primary-800: #1d51b5;
-  --primary-900: #1e488d;
-  --primary-950: #172a51;
-  
-  /* Secondary - Light Blue */
-  --secondary-50: #f0f9ff;
-  --secondary-100: #e1f2fe;
-  --secondary-200: #bce4fe;
-  --secondary-300: #84d1fc;
-  --secondary-400: #48b9f9;
-  --secondary-500: #1e9de9;
-  --secondary-600: #0e80c6;
-  --secondary-700: #10679f;
-  --secondary-800: #145582;
-  --secondary-900: #16486d;
-  --secondary-950: #0f2e47;
-  
-  /* Success - Green */
-  --success-50: #ecfdf5;
-  --success-100: #d1fae5;
-  --success-200: #a7f3d0;
-  --success-300: #6ee7b7;
-  --success-400: #34d399;
-  --success-500: #10b981;
-  --success-600: #059669;
-  --success-700: #047857;
-  --success-800: #065f46;
-  --success-900: #064e3b;
-  --success-950: #022c22;
-  
-  /* Warning - Amber */
-  --warning-50: #fffbeb;
-  --warning-100: #fef3c7;
-  --warning-200: #fde68a;
-  --warning-300: #fcd34d;
-  --warning-400: #fbbf24;
-  --warning-500: #f59e0b;
-  --warning-600: #d97706;
-  --warning-700: #b45309;
-  --warning-800: #92400e;
-  --warning-900: #78350f;
-  --warning-950: #451a03;
-  
-  /* Danger - Red */
-  --danger-50: #fef2f2;
-  --danger-100: #fee2e2;
-  --danger-200: #fecaca;
-  --danger-300: #fca5a5;
-  --danger-400: #f87171;
-  --danger-500: #ef4444;
-  --danger-600: #dc2626;
-  --danger-700: #b91c1c;
-  --danger-800: #991b1b;
-  --danger-900: #7f1d1d;
-  --danger-950: #450a0a;
-  
-  /* Gray */
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
-  --gray-950: #030712;
+/* Theme transition class to force recalculation */
+.theme-transition * {
+  transition: none !important;
 }
+
+/* Peer classes for toggle switch */
+.peer:checked ~ .peer-checked\:bg-primary-600 {
+  background-color: var(--primary);
+}
+
+.peer:checked ~ .peer-checked\:before\:translate-x-6::before {
+  transform: translateX(1.5rem);
+}
+
+/* Color Variables using new semantic color scheme */
+:root {
+  /* Primary Colors */
+  --primary: #0D9488;
+  --primary-hover: #0F766E;
+  
+  /* Accent Colors */
+  --accent: #3B82F6;
+  --accent-hover: #2563EB;
+  
+  /* Background Colors */
+  --bg-primary: #F9FAFB;
+  --bg-surface: #FFFFFF;
+  --bg-muted: #F3F4F6;
+  
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  
+  /* Border Colors */
+  --border: #E5E7EB;
+  
+  /* Status Colors */
+  --success: #10B981;
+  --error: #EF4444;
+  --warning: #F59E0B;
+  --info: #3B82F6;
+  
+  /* UI Element Colors */
+  --card-bg: var(--bg-surface);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --input-bg: var(--bg-surface);
+  --input-border: var(--border);
+  --hover-bg: var(--bg-muted);
+  --active-bg: #E5E7EB;
+  --table-header-bg: var(--bg-primary);
+  --table-row-hover: var(--bg-muted);
+  --table-border: var(--border);
+  --sidebar-bg: var(--bg-surface);
+}
+
+/* Dark mode variables */
+.dark {
+  /* Primary Colors - Dark Mode */
+  --primary: #5EEAD4;
+  --primary-hover: #2DD4BF;
+  
+  /* Accent Colors - Dark Mode */
+  --accent: #60A5FA;
+  --accent-hover: #3B82F6;
+  
+  /* Background Colors - Dark Mode */
+  --bg-primary: #1F2937;
+  --bg-surface: #374151;
+  --bg-muted: #4B5563;
+  
+  /* Text Colors - Dark Mode */
+  --text-primary: #F9FAFB;
+  --text-secondary: #D1D5DB;
+  
+  /* Border Colors - Dark Mode */
+  --border: #4B5563;
+  
+  /* Status Colors - Dark Mode */
+  --success: #34D399;
+  --error: #F87171;
+  --warning: #FBBF24;
+  --info: #60A5FA;
+  
+  /* UI Element Colors - Dark Mode */
+  --card-bg: var(--bg-surface);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --input-bg: var(--bg-surface);
+  --input-border: var(--border);
+  --hover-bg: var(--bg-muted);
+  --active-bg: #4B5563;
+  --table-header-bg: var(--bg-primary);
+  --table-row-hover: #2D3748;
+  --table-border: var(--border);
+  --sidebar-bg: var(--bg-surface);
+}
+
+/* Dark mode specific styles for common elements */
+.dark .card,
+.dark .panel,
+.dark .box {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.dark .table {
+  color: var(--text-primary);
+  border-color: var(--table-border);
+}
+
+.dark .table thead th {
+  background-color: var(--table-header-bg);
+  color: var(--text-secondary);
+}
+
+.dark .table tbody tr:hover {
+  background-color: var(--table-row-hover);
+}
+
+.dark .form-input,
+.dark .form-select,
+.dark .form-textarea {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--input-border);
+}
+
+.dark .btn-secondary {
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.dark .sidebar,
+.dark .side-nav {
+  background-color: var(--sidebar-bg);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+/* Utility classes for the new semantic colors */
+.bg-theme-primary { background-color: var(--primary); }
+.bg-theme-accent { background-color: var(--accent); }
+.bg-theme-surface { background-color: var(--bg-surface); }
+.bg-theme-muted { background-color: var(--bg-muted); }
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.border-theme { border-color: var(--border); }
+.hover\:bg-theme-primary-hover:hover { background-color: var(--primary-hover); }
+.hover\:bg-theme-accent-hover:hover { background-color: var(--accent-hover); }
 
 /* Layout */
 .container {
@@ -344,7 +415,7 @@ html, body {
 
 /* Forms */
 .input-focus-ring {
-  @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none;
+  @apply focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none;
 }
 
 /* Common utilities */

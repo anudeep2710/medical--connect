@@ -3,6 +3,24 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { User } from '../../../core/models/user.model';
 
+interface HealthMetric {
+  name: string;
+  value: string | number;
+  unit: string;
+  status: string;
+  icon: string;
+  color: string;
+  statusColor: string;
+}
+
+interface Doctor {
+  id: string;
+  name: string;
+  specialization: string;
+  avatar: string;
+  rating: number;
+}
+
 @Component({
   selector: 'app-patient-dashboard',
   templateUrl: './dashboard.component.html',
@@ -12,46 +30,56 @@ import { User } from '../../../core/models/user.model';
 export class DashboardComponent implements OnInit {
   currentUser: User | null = null;
   isLoading = true;
-  errorMessage = '';
+  errorMessage: string | null = null;
   
   // Dashboard stats
-  upcomingAppointments = 2;
-  unreadMessages = 3;
-  pendingPrescriptions = 1;
-  lastCheckup = '2023-04-15';
+  upcomingAppointments = 0;
+  unreadMessages = 0;
+  pendingPrescriptions = 0;
+  lastCheckup = new Date();
   
   // Mock health metrics
-  healthMetrics = {
-    heartRate: { value: 72, unit: 'bpm', status: 'normal' },
-    bloodPressure: { value: '120/80', unit: 'mmHg', status: 'normal' },
-    bloodSugar: { value: 90, unit: 'mg/dL', status: 'normal' },
-    weight: { value: 68, unit: 'kg', status: 'normal' }
-  };
-  
-  // Demo doctors
-  doctorsList = [
+  healthMetrics: HealthMetric[] = [
     {
-      id: 1,
-      name: 'Dr. Sarah Johnson',
-      specialization: 'Cardiology',
-      rating: 4.8,
-      avatar: 'assets/images/doctor-avatar.svg'
+      name: 'Heart Rate',
+      value: 72,
+      unit: 'bpm',
+      status: 'Normal',
+      icon: 'heart',
+      color: 'red',
+      statusColor: 'green'
     },
     {
-      id: 2,
-      name: 'Dr. Michael Chen',
-      specialization: 'Neurology',
-      rating: 4.7,
-      avatar: 'assets/images/default-avatar.svg'
+      name: 'Blood Pressure',
+      value: '120/80',
+      unit: 'mmHg',
+      status: 'Normal',
+      icon: 'activity',
+      color: 'blue',
+      statusColor: 'green'
     },
     {
-      id: 3,
-      name: 'Dr. Emily Wilson',
-      specialization: 'Dermatology',
-      rating: 4.9,
-      avatar: 'assets/images/default-avatar.svg'
+      name: 'Blood Sugar',
+      value: 95,
+      unit: 'mg/dL',
+      status: 'Normal',
+      icon: 'droplet',
+      color: 'purple',
+      statusColor: 'green'
+    },
+    {
+      name: 'Weight',
+      value: 70,
+      unit: 'kg',
+      status: 'Normal',
+      icon: 'trending-up',
+      color: 'yellow',
+      statusColor: 'green'
     }
   ];
+  
+  // Demo doctors
+  doctorsList: Doctor[] = [];
 
   constructor(
     private authService: AuthService,
@@ -66,16 +94,15 @@ export class DashboardComponent implements OnInit {
   }
 
   bookAppointment(): void {
-    this.router.navigate(['/appointments']);
+    this.router.navigate(['/appointments/book']);
   }
 
-  chatWithDoctor(doctorId: number): void {
+  chatWithDoctor(doctorId: string): void {
     this.router.navigate(['/chat'], { queryParams: { doctorId } });
   }
 
   viewMedicalRecords(): void {
-    // In a real app, this would navigate to medical records
-    alert('Medical records feature would open here');
+    this.router.navigate(['/medical-records']);
   }
 
   startHealthAssistant(): void {

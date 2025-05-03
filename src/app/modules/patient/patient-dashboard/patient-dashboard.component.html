@@ -143,7 +143,7 @@
                   'bg-primary-100 text-primary-800': appointment.type === 'VIDEO_CALL',
                   'bg-gray-100 text-gray-800': appointment.type === 'IN_PERSON'
                 }">
-                <i [data-feather]="appointment.type === 'VIDEO_CALL' ? 'video' : 'map-pin'" class="mr-1 h-3 w-3"></i>
+                <i [appFeather]="appointment.type === 'VIDEO_CALL' ? 'video' : 'map-pin'" class="mr-1 h-3 w-3"></i>
                 {{ appointment.type === 'VIDEO_CALL' ? 'Video Call' : 'In Person' }}
               </span>
               

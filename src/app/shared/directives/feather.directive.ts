@@ -1,52 +1,44 @@
-import { Directive, ElementRef, Input, OnChanges, SimpleChanges, AfterViewInit, OnInit } from '@angular/core';
-import * as feather from 'feather-icons';
+import { Directive, ElementRef, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 @Directive({
-  selector: '[appFeather], [feather], i[data-feather]',
+  selector: '[appFeather]',
   standalone: true
 })
-export class FeatherDirective implements OnInit, AfterViewInit, OnChanges {
-  @Input('appFeather') appIcon!: string;
-  @Input('feather') featherIcon!: string;
-  @Input('data-feather') dataFeather!: string;
+export class FeatherDirective implements OnInit, OnChanges {
+  @Input() appFeather: string = '';
+  @Input() size: string = '24';
+  @Input() color: string = 'currentColor';
+  private feather: any;
 
-  constructor(private el: ElementRef) {}
+  constructor(private elementRef: ElementRef) {}
 
-  ngOnInit() {
-    // If our element already has a data-feather attribute set from the template,
-    // we just need to make sure it gets processed by feather.replace()
-    if (this.el.nativeElement.hasAttribute('data-feather')) {
-      setTimeout(() => {
-        feather.replace({
-          'stroke-width': 2,
-          width: 24,
-          height: 24
-        });
-      });
-    }
-  }
-
-  ngAfterViewInit() {
+  async ngOnInit() {
+    this.feather = await import('feather-icons');
     this.updateIcon();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if ((changes['dataFeather'] && !changes['dataFeather'].firstChange) || 
-        (changes['appIcon'] && !changes['appIcon'].firstChange) ||
-        (changes['featherIcon'] && !changes['featherIcon'].firstChange)) {
+    if (changes['appFeather'] || changes['size'] || changes['color']) {
       this.updateIcon();
     }
   }
 
   private updateIcon() {
-    const iconName = this.dataFeather || this.featherIcon || this.appIcon;
-    if (iconName) {
-      this.el.nativeElement.setAttribute('data-feather', iconName);
-      feather.replace({
-        'stroke-width': 2,
-        width: 24,
-        height: 24
-      });
+    if (!this.appFeather || !this.feather) return;
+
+    const icon = this.feather.icons[this.appFeather];
+    if (!icon) {
+      console.warn(`Feather icon "${this.appFeather}" not found`);
+      return;
     }
+
+    const svg = icon.toSvg({
+      width: this.size,
+      height: this.size,
+      color: this.color,
+      'stroke-width': 2
+    });
+
+    this.elementRef.nativeElement.innerHTML = svg;
   }
 }

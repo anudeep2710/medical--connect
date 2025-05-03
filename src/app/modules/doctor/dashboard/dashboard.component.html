@@ -97,7 +97,7 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <i [data-feather]="getAppointmentTypeIcon(appointment.type)" class="h-4 w-4 mr-1" [ngClass]="appointment.type === 'VIDEO_CALL' ? 'text-blue-600' : 'text-green-600'"></i>
+                <i [appFeather]="getAppointmentTypeIcon(appointment.type)" class="h-4 w-4 mr-1" [ngClass]="appointment.type === 'VIDEO_CALL' ? 'text-blue-600' : 'text-green-600'"></i>
                 <span class="text-sm">{{ appointment.type === 'VIDEO_CALL' ? 'Video Call' : 'In-Person' }}</span>
               </div>
             </td>

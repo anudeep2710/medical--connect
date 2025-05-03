@@ -3,10 +3,70 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // Primary colors with semantic naming
         primary: {
+          DEFAULT: '#0D9488',
+          hover: '#0F766E',
+          dark: '#5EEAD4',
+          'dark-hover': '#2DD4BF',
+        },
+        // Accent colors
+        accent: {
+          DEFAULT: '#3B82F6',
+          hover: '#2563EB',
+          dark: '#60A5FA',
+          'dark-hover': '#3B82F6',
+        },
+        // Background colors
+        background: {
+          DEFAULT: '#F9FAFB',
+          dark: '#1F2937',
+        },
+        // Surface colors for cards, etc.
+        surface: {
+          DEFAULT: '#FFFFFF',
+          dark: '#374151',
+        },
+        // Muted sections
+        muted: {
+          DEFAULT: '#F3F4F6',
+          dark: '#4B5563',
+        },
+        // Text colors
+        text: {
+          primary: '#111827',
+          secondary: '#6B7280',
+          'primary-dark': '#F9FAFB',
+          'secondary-dark': '#D1D5DB',
+        },
+        // Border colors
+        border: {
+          DEFAULT: '#E5E7EB',
+          dark: '#4B5563',
+        },
+        // Status colors
+        success: {
+          DEFAULT: '#10B981',
+          dark: '#34D399',
+        },
+        error: {
+          DEFAULT: '#EF4444',
+          dark: '#F87171',
+        },
+        warning: {
+          DEFAULT: '#F59E0B',
+          dark: '#FBBF24',
+        },
+        info: {
+          DEFAULT: '#3B82F6',
+          dark: '#60A5FA',
+        },
+        // Keep existing color scales for backwards compatibility
+        'primary-old': {
           50: '#eef9ff',
           100: '#d9f1ff',
           200: '#bce4ff',
@@ -32,7 +92,7 @@ module.exports = {
           900: '#16486d',
           950: '#0f2e47',
         },
-        success: {
+        'success-old': {
           50: '#ecfdf5',
           100: '#d1fae5',
           200: '#a7f3d0',
@@ -80,6 +140,7 @@ module.exports = {
           500: '#6b7280',
           600: '#4b5563',
           700: '#374151',
+          750: '#2d3748', /* Custom color for dark striped rows */
           800: '#1f2937',
           900: '#111827',
           950: '#030712',

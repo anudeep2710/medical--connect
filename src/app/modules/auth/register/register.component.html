@@ -1,118 +1,252 @@
-<div class="w-full max-w-sm mx-auto px-6">
-  <!-- Header -->
-  <div class="text-center mb-5">
-    <h1 class="text-xl font-bold text-gray-800">HealthConnect</h1>
-    <p class="text-gray-500 text-sm">Create your account</p>
+<div class="flex items-center justify-center min-h-full">
+  <div class="w-full max-w-md bg-white rounded-lg shadow p-8">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-primary-700">HealthConnect</h1>
+      <p class="text-gray-500 text-sm mt-1">Create your account</p>
+    </div>
+    
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="w-full">
+      <!-- Role Toggle -->
+      <div class="flex justify-center mb-6">
+        <div class="inline-flex rounded-md shadow-sm" role="group">
+          <button 
+            type="button"
+            [class.bg-primary-600]="role?.value === 'PATIENT'"
+            [class.text-white]="role?.value === 'PATIENT'"
+            [class.bg-gray-100]="role?.value !== 'PATIENT'"
+            [class.text-gray-700]="role?.value !== 'PATIENT'"
+            class="px-4 py-2 text-sm font-medium rounded-l-lg border border-gray-200 hover:bg-primary-50"
+            (click)="setRole('PATIENT')">
+            Patient
+          </button>
+          <button 
+            type="button"
+            [class.bg-primary-600]="role?.value === 'DOCTOR'"
+            [class.text-white]="role?.value === 'DOCTOR'"
+            [class.bg-gray-100]="role?.value !== 'DOCTOR'"
+            [class.text-gray-700]="role?.value !== 'DOCTOR'"
+            class="px-4 py-2 text-sm font-medium rounded-r-lg border border-gray-200 hover:bg-primary-50"
+            (click)="setRole('DOCTOR')">
+            Doctor
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Name Field -->
+      <div class="mb-4">
+        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">👤</span>
+          </div>
+          <input 
+            type="text" 
+            id="fullName" 
+            formControlName="fullName"
+            class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+            placeholder="John Doe">
+        </div>
+        <div *ngIf="fullName?.invalid && (fullName?.dirty || fullName?.touched)" class="mt-1 text-xs text-red-600">
+          <span *ngIf="fullName?.errors?.['required']">Full name is required</span>
+          <span *ngIf="fullName?.errors?.['minlength']">Full name must be at least 3 characters</span>
+        </div>
+      </div>
+      
+      <!-- Email Field -->
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">&#64;</span>
+          </div>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email"
+            class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+            placeholder="demo@example.com">
+        </div>
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="mt-1 text-xs text-red-600">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+      
+      <!-- Password Field -->
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">🔒</span>
+          </div>
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            id="password" 
+            formControlName="password"
+            class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+            placeholder="••••••••">
+          <button 
+            type="button"
+            class="absolute inset-y-0 right-2 flex items-center"
+            (click)="togglePasswordVisibility()">
+            <i appFeather="eye" class="h-4 w-4 text-gray-400"></i>
+          </button>
+        </div>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="mt-1 text-xs text-red-600">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 8 characters</span>
+        </div>
+      </div>
+      
+      <!-- Confirm Password Field -->
+      <div class="mb-4">
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">🔒</span>
+          </div>
+          <input 
+            [type]="showConfirmPassword ? 'text' : 'password'" 
+            id="confirmPassword" 
+            formControlName="confirmPassword"
+            class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+            placeholder="Confirm your password">
+          <button 
+            type="button"
+            class="absolute inset-y-0 right-2 flex items-center"
+            (click)="toggleConfirmPasswordVisibility()">
+            <i appFeather="eye" class="h-4 w-4 text-gray-400"></i>
+          </button>
+        </div>
+        <div *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)" class="mt-1 text-xs text-red-600">
+          <span *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</span>
+          <span *ngIf="confirmPassword?.errors?.['passwordMismatch']">Passwords do not match</span>
+        </div>
+      </div>
+
+      <!-- Doctor-specific Fields -->
+      <ng-container *ngIf="role?.value === 'DOCTOR'">
+        <!-- License Number -->
+        <div class="mb-4">
+          <label for="licenseNumber" class="block text-sm font-medium text-gray-700 mb-1">License Number</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span class="text-gray-500">📄</span>
+            </div>
+            <input 
+              type="text" 
+              id="licenseNumber" 
+              formControlName="licenseNumber"
+              class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+              placeholder="MD-12345">
+          </div>
+          <div *ngIf="licenseNumber?.invalid && (licenseNumber?.dirty || licenseNumber?.touched)" class="mt-1 text-xs text-red-600">
+            <span *ngIf="licenseNumber?.errors?.['required']">License number is required</span>
+          </div>
+        </div>
+
+        <!-- Specialization -->
+        <div class="mb-4">
+          <label for="specialization" class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span class="text-gray-500">👨‍⚕️</span>
+            </div>
+            <select 
+              id="specialization" 
+              formControlName="specialization"
+              class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0">
+              <option value="">Select specialization</option>
+              <option *ngFor="let spec of specializationOptions" [value]="spec">{{ spec }}</option>
+            </select>
+          </div>
+          <div *ngIf="specialization?.invalid && (specialization?.dirty || specialization?.touched)" class="mt-1 text-xs text-red-600">
+            <span *ngIf="specialization?.errors?.['required']">Specialization is required</span>
+          </div>
+        </div>
+
+        <!-- Affiliation -->
+        <div class="mb-4">
+          <label for="affiliation" class="block text-sm font-medium text-gray-700 mb-1">Affiliation</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span class="text-gray-500">🏥</span>
+            </div>
+            <input 
+              type="text" 
+              id="affiliation" 
+              formControlName="affiliation"
+              class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+              placeholder="Hospital or Clinic Name">
+          </div>
+          <div *ngIf="affiliation?.invalid && (affiliation?.dirty || affiliation?.touched)" class="mt-1 text-xs text-red-600">
+            <span *ngIf="affiliation?.errors?.['required']">Affiliation is required</span>
+          </div>
+        </div>
+
+        <!-- Years of Experience -->
+        <div class="mb-4">
+          <label for="yearsOfExperience" class="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span class="text-gray-500">⏳</span>
+            </div>
+            <input 
+              type="number" 
+              id="yearsOfExperience" 
+              formControlName="yearsOfExperience"
+              class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
+              placeholder="5">
+          </div>
+          <div *ngIf="yearsOfExperience?.invalid && (yearsOfExperience?.dirty || yearsOfExperience?.touched)" class="mt-1 text-xs text-red-600">
+            <span *ngIf="yearsOfExperience?.errors?.['required']">Years of experience is required</span>
+            <span *ngIf="yearsOfExperience?.errors?.['min']">Must be at least 0 years</span>
+            <span *ngIf="yearsOfExperience?.errors?.['max']">Must be at most 70 years</span>
+          </div>
+        </div>
+      </ng-container>
+      
+      <!-- Terms and Conditions Checkbox -->
+      <div class="flex items-start mb-6">
+        <div class="flex items-center h-5">
+          <input 
+            id="agreeToTerms" 
+            type="checkbox" 
+            formControlName="agreeToTerms"
+            class="h-4 w-4 text-primary-600 rounded">
+        </div>
+        <div class="ml-2 text-sm">
+          <label for="agreeToTerms" class="text-gray-600">
+            I agree to the <a href="#" class="text-primary-600 hover:text-primary-800">Terms of Service</a> and <a href="#" class="text-primary-600 hover:text-primary-800">Privacy Policy</a>
+          </label>
+        </div>
+      </div>
+      <div *ngIf="agreeToTerms?.invalid && (agreeToTerms?.dirty || agreeToTerms?.touched)" class="mt-1 text-xs text-red-600">
+        <span *ngIf="agreeToTerms?.errors?.['required']">You must agree to the terms and conditions</span>
+      </div>
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-md">
+        {{ error }}
+      </div>
+      
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        [disabled]="registerForm.invalid || isLoading"
+        class="w-full py-2.5 px-4 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+        <span *ngIf="isLoading">Creating account...</span>
+        <span *ngIf="!isLoading">Create Account</span>
+      </button>
+      
+      <!-- Login Link -->
+      <div class="text-center mt-5">
+        <p class="text-sm text-gray-600">
+          Already have an account? <a [routerLink]="['/auth/login']" class="text-primary-600 hover:text-primary-800">Sign in</a>
+        </p>
+      </div>
+    </form>
   </div>
-  
-  <!-- Registration Form -->
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <!-- Full Name Field -->
-    <div class="mb-4">
-      <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-      <div class="relative border-b border-gray-200">
-        <div class="absolute inset-y-0 left-0 flex items-center">
-          <i appFeather="user" class="h-4 w-4 text-gray-400"></i>
-        </div>
-        <input 
-          type="text" 
-          id="fullName" 
-          formControlName="fullName"
-          class="pl-6 py-1 w-full text-sm focus:outline-none"
-          placeholder="John Doe">
-      </div>
-    </div>
-    
-    <!-- Email Field -->
-    <div class="mb-4">
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-      <div class="relative border-b border-gray-200">
-        <div class="absolute inset-y-0 left-0 flex items-center">
-          <i appFeather="mail" class="h-4 w-4 text-gray-400"></i>
-        </div>
-        <input 
-          type="email" 
-          id="email" 
-          formControlName="email"
-          class="pl-6 py-1 w-full text-sm focus:outline-none"
-          placeholder="doctor@example.com">
-      </div>
-    </div>
-    
-    <!-- Password Field -->
-    <div class="mb-4">
-      <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-      <div class="relative border-b border-gray-200">
-        <div class="absolute inset-y-0 left-0 flex items-center">
-          <i appFeather="lock" class="h-4 w-4 text-gray-400"></i>
-        </div>
-        <input 
-          [type]="showPassword ? 'text' : 'password'" 
-          id="password" 
-          formControlName="password"
-          class="pl-6 py-1 w-full text-sm focus:outline-none"
-          placeholder="••••••••">
-        <button 
-          type="button"
-          class="absolute inset-y-0 right-0 flex items-center"
-          (click)="togglePasswordVisibility()">
-          <i appFeather="eye" class="h-4 w-4 text-gray-400"></i>
-        </button>
-      </div>
-      <p class="mt-1 text-xs text-gray-500">Password must be at least 8 characters with a number and special character</p>
-    </div>
-    
-    <!-- Confirm Password Field -->
-    <div class="mb-5">
-      <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-      <div class="relative border-b border-gray-200">
-        <div class="absolute inset-y-0 left-0 flex items-center">
-          <i appFeather="lock" class="h-4 w-4 text-gray-400"></i>
-        </div>
-        <input 
-          [type]="showConfirmPassword ? 'text' : 'password'" 
-          id="confirmPassword" 
-          formControlName="confirmPassword"
-          class="pl-6 py-1 w-full text-sm focus:outline-none"
-          placeholder="Confirm your password">
-        <button 
-          type="button"
-          class="absolute inset-y-0 right-0 flex items-center"
-          (click)="toggleConfirmPasswordVisibility()">
-          <i appFeather="eye" class="h-4 w-4 text-gray-400"></i>
-        </button>
-      </div>
-    </div>
-    
-    <!-- Terms and Conditions Checkbox -->
-    <div class="flex items-start mb-5">
-      <div class="flex items-center h-5">
-        <input 
-          id="agreeToTerms" 
-          type="checkbox" 
-          formControlName="agreeToTerms"
-          class="h-3 w-3 text-primary-600 border-gray-300">
-      </div>
-      <div class="ml-2 text-xs">
-        <label for="agreeToTerms" class="text-gray-700">
-          I agree to the <a href="#" class="text-primary-600 hover:text-primary-800">Terms of Service</a> and <a href="#" class="text-primary-600 hover:text-primary-800">Privacy Policy</a>
-        </label>
-      </div>
-    </div>
-    
-    <!-- Submit Button -->
-    <button 
-      type="submit" 
-      [disabled]="registerForm.invalid || isLoading"
-      class="w-full py-1 border border-gray-300 text-gray-800 text-sm font-medium focus:outline-none">
-      Create Account
-    </button>
-    
-    <!-- Login Link -->
-    <div class="text-center mt-3">
-      <p class="text-xs text-gray-600">
-        Already have an account? <a [routerLink]="['/auth/login']" class="text-primary-600 hover:text-primary-800">Sign in</a>
-      </p>
-    </div>
-  </form>
 </div>

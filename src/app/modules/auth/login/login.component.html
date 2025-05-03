@@ -3,17 +3,43 @@
     <!-- Header -->
     <div class="text-center mb-6">
       <h1 class="text-2xl font-bold text-primary-700">HealthConnect</h1>
-      <p class="text-gray-500 text-sm mt-1">Sign in to access your account</p>
+      <p class="text-gray-500 text-sm mt-1">Sign in to your account</p>
     </div>
     
     <!-- Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
+      <!-- Role Toggle -->
+      <div class="flex justify-center mb-6">
+        <div class="inline-flex rounded-md shadow-sm" role="group">
+          <button 
+            type="button"
+            [class.bg-primary-600]="selectedRole === 'PATIENT'"
+            [class.text-white]="selectedRole === 'PATIENT'"
+            [class.bg-gray-100]="selectedRole !== 'PATIENT'"
+            [class.text-gray-700]="selectedRole !== 'PATIENT'"
+            class="px-4 py-2 text-sm font-medium rounded-l-lg border border-gray-200 hover:bg-primary-50"
+            (click)="setRole('PATIENT')">
+            Patient
+          </button>
+          <button 
+            type="button"
+            [class.bg-primary-600]="selectedRole === 'DOCTOR'"
+            [class.text-white]="selectedRole === 'DOCTOR'"
+            [class.bg-gray-100]="selectedRole !== 'DOCTOR'"
+            [class.text-gray-700]="selectedRole !== 'DOCTOR'"
+            class="px-4 py-2 text-sm font-medium rounded-r-lg border border-gray-200 hover:bg-primary-50"
+            (click)="setRole('DOCTOR')">
+            Doctor
+          </button>
+        </div>
+      </div>
+
       <!-- Email Field -->
       <div class="mb-4">
         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
         <div class="relative">
           <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-            <span class="text-gray-500">@</span>
+            <span class="text-gray-500">&#64;</span>
           </div>
           <input 
             type="email" 
@@ -22,14 +48,15 @@
             class="block w-full pl-10 py-2.5 text-sm bg-blue-50 border-0 rounded-md focus:outline-none focus:ring-0"
             placeholder="demo@example.com">
         </div>
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="mt-1 text-xs text-red-600">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+        </div>
       </div>
       
       <!-- Password Field -->
       <div class="mb-4">
-        <div class="flex justify-between mb-1">
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <a href="#" class="text-xs text-primary-600 hover:text-primary-800">Forgot password?</a>
-        </div>
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
         <div class="relative">
           <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
             <span class="text-gray-500">🔒</span>
@@ -44,33 +71,48 @@
             type="button"
             class="absolute inset-y-0 right-2 flex items-center"
             (click)="togglePasswordVisibility()">
-            <i data-feather="eye" class="h-4 w-4 text-gray-400"></i>
+            <i appFeather="eye" class="h-4 w-4 text-gray-400"></i>
           </button>
+        </div>
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="mt-1 text-xs text-red-600">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 8 characters</span>
         </div>
       </div>
       
-      <!-- Remember Me -->
-      <div class="flex items-center mb-6">
-        <input 
-          type="checkbox" 
-          id="rememberMe" 
-          formControlName="rememberMe"
-          class="h-4 w-4 text-primary-600 rounded">
-        <label for="rememberMe" class="ml-2 text-sm text-gray-600">Remember me</label>
+      <!-- Remember Me & Forgot Password -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center">
+          <input 
+            id="rememberMe" 
+            type="checkbox" 
+            formControlName="rememberMe"
+            class="h-4 w-4 text-primary-600 rounded">
+          <label for="rememberMe" class="ml-2 text-sm text-gray-600">Remember me</label>
+        </div>
+        <a [routerLink]="['/auth/forgot-password']" class="text-sm text-primary-600 hover:text-primary-800">
+          Forgot password?
+        </a>
+      </div>
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-md">
+        {{ error }}
       </div>
       
       <!-- Submit Button -->
       <button 
         type="submit" 
-        [disabled]="loading || loginForm.invalid"
-        class="w-full py-2.5 px-4 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
-        Sign In
+        [disabled]="loginForm.invalid || isLoading"
+        class="w-full py-2.5 px-4 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+        <span *ngIf="isLoading">Signing in...</span>
+        <span *ngIf="!isLoading">Sign in</span>
       </button>
       
       <!-- Register Link -->
       <div class="text-center mt-5">
         <p class="text-sm text-gray-600">
-          Don't have an account? <a [routerLink]="['/auth/register']" class="text-primary-600 hover:text-primary-800">Register now</a>
+          Don't have an account? <a [routerLink]="['/auth/register']" class="text-primary-600 hover:text-primary-800">Sign up</a>
         </p>
       </div>
     </form>

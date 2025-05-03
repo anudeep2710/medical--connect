@@ -1,56 +1,45 @@
-import { Component, Input, AfterViewInit, ElementRef, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
-import * as feather from 'feather-icons';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-feather-icon',
-  template: '<i #iconElement></i>',
-  styles: [`
-    :host {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-  `],
-  standalone: false
+  template: '',
+  standalone: true
 })
-export class FeatherIconComponent implements AfterViewInit, OnChanges {
+export class FeatherIconComponent implements OnInit, OnChanges {
   @Input() name: string = '';
-  @Input() size: number = 24;
+  @Input() size: string = '24';
   @Input() color: string = 'currentColor';
-  @Input() strokeWidth: number = 2;
-  
-  @ViewChild('iconElement') iconElement!: ElementRef;
+  private feather: any;
 
-  constructor() {}
+  constructor(private elementRef: ElementRef) {}
 
-  ngAfterViewInit(): void {
+  async ngOnInit() {
+    this.feather = await import('feather-icons');
     this.updateIcon();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.iconElement && this.iconElement.nativeElement) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['name'] || changes['size'] || changes['color']) {
       this.updateIcon();
     }
   }
 
-  private updateIcon(): void {
-    if (this.iconElement && this.iconElement.nativeElement && this.name) {
-      const element = this.iconElement.nativeElement;
-      
-      // Set attributes individually to avoid TypeScript indexing issues
-      element.setAttribute('data-feather', this.name);
-      element.setAttribute('width', String(this.size));
-      element.setAttribute('height', String(this.size));
-      element.setAttribute('stroke-width', String(this.strokeWidth));
-      element.setAttribute('color', this.color);
-      
-      // Replace with feather icon
-      feather.replace({
-        width: this.size,
-        height: this.size,
-        'stroke-width': this.strokeWidth,
-        color: this.color
-      });
+  private updateIcon() {
+    if (!this.name || !this.feather) return;
+
+    const icon = this.feather.icons[this.name];
+    if (!icon) {
+      console.warn(`Feather icon "${this.name}" not found`);
+      return;
     }
+
+    const svg = icon.toSvg({
+      width: this.size,
+      height: this.size,
+      color: this.color,
+      'stroke-width': 2
+    });
+
+    this.elementRef.nativeElement.innerHTML = svg;
   }
 }

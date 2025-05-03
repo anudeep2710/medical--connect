@@ -1,8 +1,20 @@
-<div *ngIf="isLoading" class="flex items-center justify-center h-full">
-  <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
+<!-- Loading State -->
+<div *ngIf="isLoading" class="flex items-center justify-center h-full min-h-[400px]">
+  <div class="flex flex-col items-center space-y-4">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+    <p class="text-gray-600">Loading your dashboard...</p>
+  </div>
 </div>
 
-<div *ngIf="!isLoading && currentUser" class="space-y-6">
+<!-- Error State -->
+<div *ngIf="!isLoading && errorMessage" class="bg-red-50 p-6 rounded-lg text-red-600 max-w-2xl mx-auto">
+  <div class="flex items-center space-x-3">
+    <i appFeather="alert-circle" class="h-6 w-6"></i>
+    <p>{{ errorMessage }}</p>
+  </div>
+</div>
+
+<div *ngIf="!isLoading && !errorMessage && currentUser" class="space-y-6">
   <!-- Welcome Section -->
   <div class="bg-white rounded-lg p-6 shadow">
     <div class="flex items-center">
@@ -22,11 +34,14 @@
       <div class="flex items-center justify-between mb-2">
         <div class="text-gray-500">Upcoming Appointments</div>
         <div class="bg-blue-100 p-2 rounded-full">
-          <i data-feather="calendar" class="text-primary-600 h-5 w-5"></i>
+          <i appFeather="calendar" class="text-primary-600 h-5 w-5"></i>
         </div>
       </div>
       <div class="text-2xl font-bold">{{ upcomingAppointments }}</div>
-      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline">View all</a>
+      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+        View appointments
+        <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
+      </a>
     </div>
 
     <!-- Unread Messages -->
@@ -34,11 +49,14 @@
       <div class="flex items-center justify-between mb-2">
         <div class="text-gray-500">Unread Messages</div>
         <div class="bg-green-100 p-2 rounded-full">
-          <i data-feather="message-circle" class="text-green-600 h-5 w-5"></i>
+          <i appFeather="message-circle" class="text-green-600 h-5 w-5"></i>
         </div>
       </div>
       <div class="text-2xl font-bold">{{ unreadMessages }}</div>
-      <a [routerLink]="['/chat']" class="text-primary-600 text-sm hover:underline">View all</a>
+      <a [routerLink]="['/chat']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+        View messages
+        <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
+      </a>
     </div>
 
     <!-- Pending Prescriptions -->
@@ -46,11 +64,14 @@
       <div class="flex items-center justify-between mb-2">
         <div class="text-gray-500">Pending Prescriptions</div>
         <div class="bg-purple-100 p-2 rounded-full">
-          <i data-feather="clipboard" class="text-purple-600 h-5 w-5"></i>
+          <i appFeather="clipboard" class="text-purple-600 h-5 w-5"></i>
         </div>
       </div>
       <div class="text-2xl font-bold">{{ pendingPrescriptions }}</div>
-      <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">View all</a>
+      <a [routerLink]="['/prescriptions']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+        View prescriptions
+        <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
+      </a>
     </div>
 
     <!-- Last Checkup -->
@@ -58,11 +79,14 @@
       <div class="flex items-center justify-between mb-2">
         <div class="text-gray-500">Last Checkup</div>
         <div class="bg-yellow-100 p-2 rounded-full">
-          <i data-feather="activity" class="text-yellow-600 h-5 w-5"></i>
+          <i appFeather="activity" class="text-yellow-600 h-5 w-5"></i>
         </div>
       </div>
       <div class="text-2xl font-bold">{{ lastCheckup | date:'mediumDate' }}</div>
-      <a href="javascript:void(0)" (click)="viewMedicalRecords()" class="text-primary-600 text-sm hover:underline">View history</a>
+      <a [routerLink]="['/medical-records']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+        View history
+        <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
+      </a>
     </div>
   </div>
 
@@ -72,67 +96,25 @@
     <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold">Your Health Metrics</h2>
-        <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">See More</a>
+        <a [routerLink]="['/health-metrics']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+          View detailed metrics
+          <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
+        </a>
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Heart Rate -->
-        <div class="border rounded-lg p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Health Metrics Cards -->
+        <div *ngFor="let metric of healthMetrics" class="border rounded-lg p-4">
           <div class="flex items-center mb-2">
-            <div class="bg-red-100 p-2 rounded-full mr-2">
-              <i data-feather="heart" class="text-red-600 h-4 w-4"></i>
+            <div [ngClass]="'bg-' + metric.color + '-100 p-2 rounded-full mr-2'">
+              <i [appFeather]="metric.icon" [ngClass]="'text-' + metric.color + '-600 h-4 w-4'"></i>
             </div>
-            <span class="text-gray-600 text-sm">Heart Rate</span>
+            <span class="text-gray-600 text-sm">{{ metric.name }}</span>
           </div>
           <div class="flex items-baseline">
-            <span class="text-xl font-bold">{{ healthMetrics.heartRate.value }}</span>
-            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.heartRate.unit }}</span>
+            <span class="text-xl font-bold">{{ metric.value }}</span>
+            <span class="ml-1 text-gray-500 text-sm">{{ metric.unit }}</span>
           </div>
-          <span class="text-green-600 text-xs">{{ healthMetrics.heartRate.status }}</span>
-        </div>
-
-        <!-- Blood Pressure -->
-        <div class="border rounded-lg p-4">
-          <div class="flex items-center mb-2">
-            <div class="bg-blue-100 p-2 rounded-full mr-2">
-              <i data-feather="activity" class="text-blue-600 h-4 w-4"></i>
-            </div>
-            <span class="text-gray-600 text-sm">Blood Pressure</span>
-          </div>
-          <div class="flex items-baseline">
-            <span class="text-xl font-bold">{{ healthMetrics.bloodPressure.value }}</span>
-            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.bloodPressure.unit }}</span>
-          </div>
-          <span class="text-green-600 text-xs">{{ healthMetrics.bloodPressure.status }}</span>
-        </div>
-
-        <!-- Blood Sugar -->
-        <div class="border rounded-lg p-4">
-          <div class="flex items-center mb-2">
-            <div class="bg-purple-100 p-2 rounded-full mr-2">
-              <i data-feather="droplet" class="text-purple-600 h-4 w-4"></i>
-            </div>
-            <span class="text-gray-600 text-sm">Blood Sugar</span>
-          </div>
-          <div class="flex items-baseline">
-            <span class="text-xl font-bold">{{ healthMetrics.bloodSugar.value }}</span>
-            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.bloodSugar.unit }}</span>
-          </div>
-          <span class="text-green-600 text-xs">{{ healthMetrics.bloodSugar.status }}</span>
-        </div>
-
-        <!-- Weight -->
-        <div class="border rounded-lg p-4">
-          <div class="flex items-center mb-2">
-            <div class="bg-yellow-100 p-2 rounded-full mr-2">
-              <i data-feather="trending-up" class="text-yellow-600 h-4 w-4"></i>
-            </div>
-            <span class="text-gray-600 text-sm">Weight</span>
-          </div>
-          <div class="flex items-baseline">
-            <span class="text-xl font-bold">{{ healthMetrics.weight.value }}</span>
-            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.weight.unit }}</span>
-          </div>
-          <span class="text-green-600 text-xs">{{ healthMetrics.weight.status }}</span>
+          <span [ngClass]="'text-' + metric.statusColor + '-600 text-xs'">{{ metric.status }}</span>
         </div>
       </div>
     </div>
@@ -144,31 +126,31 @@
         <button (click)="bookAppointment()" class="w-full flex items-center justify-between p-3 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors">
           <div class="flex items-center">
             <div class="bg-primary-100 p-2 rounded-full mr-3">
-              <i data-feather="calendar" class="text-primary-600 h-5 w-5"></i>
+              <i appFeather="calendar" class="text-primary-600 h-5 w-5"></i>
             </div>
             <span>Book Appointment</span>
           </div>
-          <i data-feather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+          <i appFeather="chevron-right" class="text-gray-400 h-5 w-5"></i>
         </button>
 
         <button (click)="startHealthAssistant()" class="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
           <div class="flex items-center">
             <div class="bg-green-100 p-2 rounded-full mr-3">
-              <i data-feather="cpu" class="text-green-600 h-5 w-5"></i>
+              <i appFeather="cpu" class="text-green-600 h-5 w-5"></i>
             </div>
             <span>Health Assistant</span>
           </div>
-          <i data-feather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+          <i appFeather="chevron-right" class="text-gray-400 h-5 w-5"></i>
         </button>
 
         <button (click)="viewMedicalRecords()" class="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
           <div class="flex items-center">
             <div class="bg-blue-100 p-2 rounded-full mr-3">
-              <i data-feather="file-text" class="text-blue-600 h-5 w-5"></i>
+              <i appFeather="file-text" class="text-blue-600 h-5 w-5"></i>
             </div>
             <span>Medical Records</span>
           </div>
-          <i data-feather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+          <i appFeather="chevron-right" class="text-gray-400 h-5 w-5"></i>
         </button>
       </div>
     </div>
@@ -178,9 +160,27 @@
   <div class="bg-white rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Your Doctors</h2>
-      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline">Find more doctors</a>
+      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+        Find more doctors
+        <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
+      </a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    
+    <!-- Empty State for Doctors -->
+    <div *ngIf="!doctorsList || doctorsList.length === 0" class="text-center py-8">
+      <div class="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4">
+        <i appFeather="user-x" class="h-8 w-8 text-gray-400"></i>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-1">No Doctors Yet</h3>
+      <p class="text-gray-500 mb-4">You haven't connected with any doctors yet.</p>
+      <button (click)="bookAppointment()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+        <i appFeather="plus" class="h-4 w-4 mr-2"></i>
+        Find a Doctor
+      </button>
+    </div>
+
+    <!-- Doctors List -->
+    <div *ngIf="doctorsList && doctorsList.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div *ngFor="let doctor of doctorsList" class="border rounded-lg p-4 hover:shadow-md transition-shadow">
         <div class="flex items-center mb-3">
           <img [src]="doctor.avatar" [alt]="doctor.name" class="h-12 w-12 rounded-full mr-3 object-cover">
@@ -190,7 +190,7 @@
           </div>
         </div>
         <div class="flex items-center text-yellow-500 mb-3">
-          <i data-feather="star" class="h-4 w-4 fill-current"></i>
+          <i appFeather="star" class="h-4 w-4 fill-current"></i>
           <span class="ml-1 text-sm">{{ doctor.rating }}/5</span>
         </div>
         <div class="flex space-x-2">
@@ -204,9 +204,4 @@
       </div>
     </div>
   </div>
-</div>
-
-<!-- Error state -->
-<div *ngIf="!isLoading && errorMessage" class="bg-red-50 p-4 rounded-lg text-red-600">
-  {{ errorMessage }}
 </div>

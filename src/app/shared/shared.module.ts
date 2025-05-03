@@ -13,11 +13,9 @@ import { ModalComponent } from './components/modal/modal.component';
 
 // Directives
 import { FeatherDirective } from './directives/feather.directive';
+import { DynamicFeatherDirective } from './directives/dynamic-feather.directive';
 
 @NgModule({
-  declarations: [
-    FeatherIconComponent
-  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,9 +24,11 @@ import { FeatherDirective } from './directives/feather.directive';
     ModalComponent,
     CardComponent,
     FeatherDirective,
+    DynamicFeatherDirective,
     ButtonComponent,
     AvatarComponent,
-    InputComponent
+    InputComponent,
+    FeatherIconComponent
   ],
   exports: [
     // Angular modules
@@ -46,7 +46,8 @@ import { FeatherDirective } from './directives/feather.directive';
     ModalComponent,
     
     // Directives
-    FeatherDirective
+    FeatherDirective,
+    DynamicFeatherDirective
   ]
 })
 export class SharedModule { }
