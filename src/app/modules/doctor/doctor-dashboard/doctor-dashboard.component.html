@@ -1,0 +1,237 @@
+<div>
+  <!-- Page title and actions -->
+  <div class="mb-6 sm:flex sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">Doctor Dashboard</h1>
+    <div class="mt-3 sm:mt-0">
+      <div class="text-sm text-gray-500">
+        {{ today | date:'EEEE, MMMM d, y' }}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Error Alert -->
+  <div *ngIf="error" class="mb-6 bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg">
+    <p>{{ error }}</p>
+  </div>
+  
+  <!-- Statistics Header -->
+  <section class="mb-8">
+    <div *ngIf="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div *ngFor="let i of [1, 2, 3, 4]" class="bg-white border border-gray-200 rounded-lg p-4 animate-pulse">
+        <div class="h-10 bg-gray-200 rounded mb-4"></div>
+        <div class="h-8 bg-gray-200 rounded mb-2 w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+    </div>
+    
+    <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <app-card *ngFor="let stat of doctorStats" [shadow]="'sm'">
+        <div class="flex items-start">
+          <div [ngClass]="['p-3 rounded-full mr-4', stat.color, 'bg-opacity-10']">
+            <i [attr.data-feather]="stat.icon" class="h-6 w-6" [ngClass]="stat.color"></i>
+          </div>
+          
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">{{ stat.title }}</h3>
+            <div class="mt-1">
+              <p class="text-2xl font-semibold text-gray-900">{{ stat.value }}</p>
+            </div>
+            
+            <div class="mt-1 flex items-center">
+              <i [attr.data-feather]="getTrendIcon(stat.trend)" class="h-4 w-4 mr-1" [ngClass]="getTrendClass(stat.trend)"></i>
+              <span [ngClass]="getTrendClass(stat.trend)">{{ stat.trendValue }}</span>
+              <span class="text-gray-500 text-xs ml-1">vs last week</span>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </section>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Today's Appointments Section -->
+    <section class="lg:col-span-2">
+      <app-card 
+        [title]="'Today\'s Appointments'" 
+        [subtitle]="(today | date:'EEEE, MMMM d') || ''" 
+        [icon]="'calendar'"
+        [iconBg]="'primary'"
+        [shadow]="'sm'">
+        
+        <div *ngIf="isLoading" class="animate-pulse">
+          <div *ngFor="let i of [1, 2, 3, 4, 5]" class="mb-4 flex">
+            <div class="w-16 bg-gray-200 rounded mr-4"></div>
+            <div class="flex-grow h-20 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+        
+        <div *ngIf="!isLoading && todayAppointments.length === 0" class="text-center py-8">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100">
+            <i [data-feather]="'calendar'" class="h-6 w-6 text-primary-600"></i>
+          </div>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No appointments today</h3>
+          <p class="mt-1 text-sm text-gray-500">Your schedule is clear for the day.</p>
+        </div>
+        
+        <div *ngIf="!isLoading && todayAppointments.length > 0" class="relative">
+          <!-- Timeline line -->
+          <div class="absolute top-0 bottom-0 left-16 border-l-2 border-gray-200"></div>
+          
+          <!-- Timeline entries -->
+          <div *ngFor="let hour of hourSlots" class="relative flex mb-4">
+            <!-- Time marker -->
+            <div class="w-16 text-right text-sm font-medium text-gray-500 pr-4 py-1.5">
+              {{ formatHour(hour) }}
+            </div>
+            
+            <!-- Appointment or empty slot -->
+            <div 
+              *ngIf="getAppointmentForHour(hour) as appointment"
+              class="flex-grow rounded-lg border px-4 py-3 ml-4"
+              [ngClass]="{
+                'bg-white': true,
+                'border-gray-300': appointment.status === 'PENDING',
+                'border-success-300': appointment.status === 'CONFIRMED',
+                'border-gray-200 bg-gray-50': appointment.status === 'COMPLETED',
+                'border-danger-300': appointment.status === 'CANCELLED',
+                'opacity-70': isPastHour(hour),
+                'border-l-4 border-primary-500': isCurrentHour(hour)
+              }">
+              
+              <div class="flex items-start justify-between">
+                <div class="flex items-start">
+                  <app-avatar
+                    [name]="appointment.patient.fullName"
+                    size="md"
+                    class="mr-3 flex-shrink-0">
+                  </app-avatar>
+                  
+                  <div>
+                    <h4 class="text-base font-medium text-gray-900">{{ appointment.patient.fullName }}</h4>
+                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                      <i [data-feather]="'clock'" class="mr-1.5 h-3 w-3 text-gray-400"></i>
+                      <span>{{ formatTime(appointment.startTime) }} - {{ formatTime(appointment.endTime) }}</span>
+                      
+                      <span 
+                        class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                        [ngClass]="getAppointmentStatusClass(appointment.status)">
+                        {{ appointment.status.toLowerCase() }}
+                      </span>
+                    </div>
+                    
+                    <div *ngIf="appointment.reasonForVisit" class="mt-1 text-sm text-gray-600">
+                      <span class="font-medium">Reason:</span> {{ appointment.reasonForVisit }}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="flex flex-col space-y-1">
+                  <app-button 
+                    *ngIf="appointment.type === 'VIDEO_CALL' && appointment.status === 'CONFIRMED' && !isPastHour(hour)"
+                    variant="primary" 
+                    size="sm"
+                    icon="video" 
+                    (clicked)="joinCall(appointment)">
+                    Join Call
+                  </app-button>
+                  
+                  <app-button 
+                    *ngIf="appointment.status !== 'CANCELLED' && appointment.status !== 'COMPLETED'"
+                    variant="outline" 
+                    size="sm"
+                    (clicked)="viewDetails(appointment)">
+                    View
+                  </app-button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Empty slot -->
+            <div 
+              *ngIf="!getAppointmentForHour(hour)"
+              class="flex-grow rounded-lg border border-dashed border-gray-300 px-4 py-3 flex items-center justify-center ml-4"
+              [ngClass]="{
+                'bg-white': !isPastHour(hour),
+                'bg-gray-50 opacity-70': isPastHour(hour)
+              }">
+              <span class="text-sm text-gray-500">No appointment scheduled</span>
+            </div>
+            
+            <!-- Current time indicator -->
+            <div *ngIf="isCurrentHour(hour)" class="absolute -left-2 top-2 w-6 h-6 rounded-full bg-primary-100 border-2 border-primary-500 z-10"></div>
+          </div>
+        </div>
+      </app-card>
+    </section>
+    
+    <!-- Recent Patient Messages -->
+    <section>
+      <app-card 
+        [title]="'Recent Messages'" 
+        [icon]="'message-circle'"
+        [iconBg]="'secondary'"
+        [shadow]="'sm'">
+        
+        <div *ngIf="isLoading" class="animate-pulse">
+          <div *ngFor="let i of [1, 2, 3, 4, 5]" class="py-3 border-b border-gray-200 flex">
+            <div class="w-10 h-10 bg-gray-200 rounded-full mr-3"></div>
+            <div class="flex-grow">
+              <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="!isLoading && recentMessages.length === 0" class="text-center py-8">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-secondary-100">
+            <i [data-feather]="'message-circle'" class="h-6 w-6 text-secondary-600"></i>
+          </div>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">No messages yet</h3>
+          <p class="mt-1 text-sm text-gray-500">You haven't received any messages from patients.</p>
+        </div>
+        
+        <div *ngIf="!isLoading && recentMessages.length > 0">
+          <div 
+            *ngFor="let chat of recentMessages"
+            class="py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
+            (click)="openChat(chat.id)">
+            
+            <div class="flex items-start">
+              <div class="mr-3 flex-shrink-0">
+                <!-- Simplified avatar placeholder -->
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span class="text-blue-800 font-bold">{{chat.participants[0].fullName.charAt(0)}}</span>
+                </div>
+              </div>
+              
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-medium text-gray-900 truncate">{{ chat.participants[0].fullName }}</h3>
+                  <span class="text-xs text-gray-500">
+                    {{ chat.lastMessage?.createdAt }}
+                  </span>
+                </div>
+                
+                <p class="text-sm text-gray-500 truncate">
+                  {{ chat.lastMessage?.text || 'No messages yet' }}
+                </p>
+                
+                <div *ngIf="chat.unreadCount > 0" class="mt-1">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                    {{ chat.unreadCount }} new {{ chat.unreadCount === 1 ? 'message' : 'messages' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-3 text-center">
+            <a routerLink="/chat" class="text-sm font-medium text-secondary-600 hover:text-secondary-700">
+              View all messages <i [data-feather]="'arrow-right'" class="inline h-4 w-4"></i>
+            </a>
+          </div>
+        </div>
+      </app-card>
+    </section>
+  </div>
+</div>

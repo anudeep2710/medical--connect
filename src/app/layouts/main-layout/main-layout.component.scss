@@ -1,0 +1,33 @@
+// Main Layout specific styles
+
+// Fix for Feather icons in sidebar
+[data-feather] {
+  stroke-width: 1.5;
+}
+
+// Transition for sidebar content
+aside {
+  .transition-opacity {
+    transition: opacity 0.3s ease;
+  }
+}
+
+// Custom scrollbar for the content area
+main {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+  }
+}

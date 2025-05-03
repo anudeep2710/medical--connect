@@ -1,0 +1,212 @@
+<div *ngIf="isLoading" class="flex items-center justify-center h-full">
+  <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
+</div>
+
+<div *ngIf="!isLoading && currentUser" class="space-y-6">
+  <!-- Welcome Section -->
+  <div class="bg-white rounded-lg p-6 shadow">
+    <div class="flex items-center">
+      <img [src]="currentUser.avatar || 'assets/images/default-avatar.svg'" alt="User Avatar" 
+        class="h-16 w-16 rounded-full object-cover mr-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Welcome back, {{ currentUser.fullName }}</h1>
+        <p class="text-gray-600">Let's take care of your health today</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Upcoming Appointments -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Upcoming Appointments</div>
+        <div class="bg-blue-100 p-2 rounded-full">
+          <i data-feather="calendar" class="text-primary-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ upcomingAppointments }}</div>
+      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline">View all</a>
+    </div>
+
+    <!-- Unread Messages -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Unread Messages</div>
+        <div class="bg-green-100 p-2 rounded-full">
+          <i data-feather="message-circle" class="text-green-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ unreadMessages }}</div>
+      <a [routerLink]="['/chat']" class="text-primary-600 text-sm hover:underline">View all</a>
+    </div>
+
+    <!-- Pending Prescriptions -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Pending Prescriptions</div>
+        <div class="bg-purple-100 p-2 rounded-full">
+          <i data-feather="clipboard" class="text-purple-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ pendingPrescriptions }}</div>
+      <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">View all</a>
+    </div>
+
+    <!-- Last Checkup -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Last Checkup</div>
+        <div class="bg-yellow-100 p-2 rounded-full">
+          <i data-feather="activity" class="text-yellow-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ lastCheckup | date:'mediumDate' }}</div>
+      <a href="javascript:void(0)" (click)="viewMedicalRecords()" class="text-primary-600 text-sm hover:underline">View history</a>
+    </div>
+  </div>
+
+  <!-- Health Metrics and Actions Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Health Metrics -->
+    <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Your Health Metrics</h2>
+        <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">See More</a>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Heart Rate -->
+        <div class="border rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <div class="bg-red-100 p-2 rounded-full mr-2">
+              <i data-feather="heart" class="text-red-600 h-4 w-4"></i>
+            </div>
+            <span class="text-gray-600 text-sm">Heart Rate</span>
+          </div>
+          <div class="flex items-baseline">
+            <span class="text-xl font-bold">{{ healthMetrics.heartRate.value }}</span>
+            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.heartRate.unit }}</span>
+          </div>
+          <span class="text-green-600 text-xs">{{ healthMetrics.heartRate.status }}</span>
+        </div>
+
+        <!-- Blood Pressure -->
+        <div class="border rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <div class="bg-blue-100 p-2 rounded-full mr-2">
+              <i data-feather="activity" class="text-blue-600 h-4 w-4"></i>
+            </div>
+            <span class="text-gray-600 text-sm">Blood Pressure</span>
+          </div>
+          <div class="flex items-baseline">
+            <span class="text-xl font-bold">{{ healthMetrics.bloodPressure.value }}</span>
+            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.bloodPressure.unit }}</span>
+          </div>
+          <span class="text-green-600 text-xs">{{ healthMetrics.bloodPressure.status }}</span>
+        </div>
+
+        <!-- Blood Sugar -->
+        <div class="border rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <div class="bg-purple-100 p-2 rounded-full mr-2">
+              <i data-feather="droplet" class="text-purple-600 h-4 w-4"></i>
+            </div>
+            <span class="text-gray-600 text-sm">Blood Sugar</span>
+          </div>
+          <div class="flex items-baseline">
+            <span class="text-xl font-bold">{{ healthMetrics.bloodSugar.value }}</span>
+            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.bloodSugar.unit }}</span>
+          </div>
+          <span class="text-green-600 text-xs">{{ healthMetrics.bloodSugar.status }}</span>
+        </div>
+
+        <!-- Weight -->
+        <div class="border rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <div class="bg-yellow-100 p-2 rounded-full mr-2">
+              <i data-feather="trending-up" class="text-yellow-600 h-4 w-4"></i>
+            </div>
+            <span class="text-gray-600 text-sm">Weight</span>
+          </div>
+          <div class="flex items-baseline">
+            <span class="text-xl font-bold">{{ healthMetrics.weight.value }}</span>
+            <span class="ml-1 text-gray-500 text-sm">{{ healthMetrics.weight.unit }}</span>
+          </div>
+          <span class="text-green-600 text-xs">{{ healthMetrics.weight.status }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
+      <div class="space-y-3">
+        <button (click)="bookAppointment()" class="w-full flex items-center justify-between p-3 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors">
+          <div class="flex items-center">
+            <div class="bg-primary-100 p-2 rounded-full mr-3">
+              <i data-feather="calendar" class="text-primary-600 h-5 w-5"></i>
+            </div>
+            <span>Book Appointment</span>
+          </div>
+          <i data-feather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+        </button>
+
+        <button (click)="startHealthAssistant()" class="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+          <div class="flex items-center">
+            <div class="bg-green-100 p-2 rounded-full mr-3">
+              <i data-feather="cpu" class="text-green-600 h-5 w-5"></i>
+            </div>
+            <span>Health Assistant</span>
+          </div>
+          <i data-feather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+        </button>
+
+        <button (click)="viewMedicalRecords()" class="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+          <div class="flex items-center">
+            <div class="bg-blue-100 p-2 rounded-full mr-3">
+              <i data-feather="file-text" class="text-blue-600 h-5 w-5"></i>
+            </div>
+            <span>Medical Records</span>
+          </div>
+          <i data-feather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your Doctors -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Your Doctors</h2>
+      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline">Find more doctors</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let doctor of doctorsList" class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <div class="flex items-center mb-3">
+          <img [src]="doctor.avatar" [alt]="doctor.name" class="h-12 w-12 rounded-full mr-3 object-cover">
+          <div>
+            <h3 class="font-medium">{{ doctor.name }}</h3>
+            <p class="text-sm text-gray-500">{{ doctor.specialization }}</p>
+          </div>
+        </div>
+        <div class="flex items-center text-yellow-500 mb-3">
+          <i data-feather="star" class="h-4 w-4 fill-current"></i>
+          <span class="ml-1 text-sm">{{ doctor.rating }}/5</span>
+        </div>
+        <div class="flex space-x-2">
+          <button (click)="bookAppointment()" class="flex-1 bg-primary-50 hover:bg-primary-100 text-primary-700 py-1.5 px-3 rounded text-sm">
+            Book
+          </button>
+          <button (click)="chatWithDoctor(doctor.id)" class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 py-1.5 px-3 rounded text-sm">
+            Chat
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error state -->
+<div *ngIf="!isLoading && errorMessage" class="bg-red-50 p-4 rounded-lg text-red-600">
+  {{ errorMessage }}
+</div>

@@ -1,0 +1,175 @@
+<div *ngIf="isLoading" class="flex items-center justify-center h-full">
+  <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
+</div>
+
+<div *ngIf="!isLoading && currentUser" class="space-y-6">
+  <!-- Welcome Section -->
+  <div class="bg-white rounded-lg p-6 shadow">
+    <div class="flex items-center">
+      <img [src]="currentUser.avatar || 'assets/images/doctor-avatar.svg'" alt="Doctor Avatar" 
+        class="h-16 w-16 rounded-full object-cover mr-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Welcome, Dr. {{ currentUser.fullName.split(' ')[1] }}</h1>
+        <p class="text-gray-600">{{ currentUser.specialization }} | {{ currentUser.affiliation }}</p>
+      </div>
+      <div class="ml-auto flex space-x-4">
+        <button class="btn btn-secondary flex items-center">
+          <i data-feather="calendar" class="h-4 w-4 mr-2"></i>
+          <span>Set Availability</span>
+        </button>
+        <button class="btn btn-primary flex items-center">
+          <i data-feather="plus" class="h-4 w-4 mr-2"></i>
+          <span>Add Patient</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Today's Appointments -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Today's Appointments</div>
+        <div class="bg-blue-100 p-2 rounded-full">
+          <i data-feather="calendar" class="text-primary-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ todayAppointments }}</div>
+      <button (click)="viewAllAppointments()" class="text-primary-600 text-sm hover:underline">View schedule</button>
+    </div>
+
+    <!-- Total Patients -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Total Patients</div>
+        <div class="bg-green-100 p-2 rounded-full">
+          <i data-feather="users" class="text-green-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ totalPatients }}</div>
+      <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">View all patients</a>
+    </div>
+
+    <!-- Pending Reports -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-gray-500">Pending Reports</div>
+        <div class="bg-yellow-100 p-2 rounded-full">
+          <i data-feather="file-text" class="text-yellow-600 h-5 w-5"></i>
+        </div>
+      </div>
+      <div class="text-2xl font-bold">{{ pendingReports }}</div>
+      <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">Complete reports</a>
+    </div>
+  </div>
+
+  <!-- Today's Schedule -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Today's Schedule</h2>
+      <button (click)="viewAllAppointments()" class="text-primary-600 text-sm hover:underline">View all appointments</button>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let appointment of todaysAppointmentsList" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <img [src]="appointment.patientAvatar" class="h-10 w-10 rounded-full object-cover" [alt]="appointment.patientName">
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">{{ appointment.patientName }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ appointment.time }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <i [data-feather]="getAppointmentTypeIcon(appointment.type)" class="h-4 w-4 mr-1" [ngClass]="appointment.type === 'VIDEO_CALL' ? 'text-blue-600' : 'text-green-600'"></i>
+                <span class="text-sm">{{ appointment.type === 'VIDEO_CALL' ? 'Video Call' : 'In-Person' }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="getStatusClass(appointment.status)">
+                {{ appointment.status }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+              <button 
+                (click)="startAppointment(appointment.id, appointment.type)" 
+                class="text-primary-600 hover:text-primary-900"
+                [disabled]="appointment.status !== 'CONFIRMED'">
+                Start
+              </button>
+              <button class="text-gray-600 hover:text-gray-900">Details</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Patients -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold">Recent Patients</h2>
+      <a href="javascript:void(0)" class="text-primary-600 text-sm hover:underline">View all patients</a>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Visit</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let patient of recentPatientsList" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <img [src]="patient.avatar" class="h-10 w-10 rounded-full object-cover" [alt]="patient.name">
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">{{ patient.name }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ patient.age }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ patient.lastVisit | date:'mediumDate' }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ patient.condition }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+              <button (click)="viewPatientDetails(patient.id)" class="text-primary-600 hover:text-primary-900">View</button>
+              <button (click)="messagePatient(patient.id)" class="text-gray-600 hover:text-gray-900">Message</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Error state -->
+<div *ngIf="!isLoading && errorMessage" class="bg-red-50 p-4 rounded-lg text-red-600">
+  {{ errorMessage }}
+</div>

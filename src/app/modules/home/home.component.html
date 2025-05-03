@@ -1,0 +1,7 @@
+<div class="flex items-center justify-center h-screen">
+  <div *ngIf="isLoading" style="width: 4rem; height: 4rem; border-radius: 50%; border: 2px solid transparent; border-bottom-color: var(--primary-600);" class="animate-spin"></div>
+  <div *ngIf="!isLoading" class="text-center">
+    <h1 class="text-2xl mb-4">Redirecting to your dashboard...</h1>
+    <p class="text-gray-600">Please wait a moment.</p>
+  </div>
+</div>

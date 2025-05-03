@@ -1,0 +1,7 @@
+<div class="avatar-container" [style]="avatarClass">
+  <img [src]="src" [alt]="alt" (error)="onError()" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+  <span *ngIf="status" class="status-indicator" 
+    [style.background-color]="status === 'online' ? '#4caf50' : status === 'busy' ? '#f44336' : '#9e9e9e'"
+    style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;">
+  </span>
+</div>

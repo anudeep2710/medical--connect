@@ -1,0 +1,34 @@
+.avatar {
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.status-indicator {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.status-online {
+  background-color: #10b981;
+}
+
+.status-offline {
+  background-color: #6b7280;
+}
+
+.status-busy {
+  background-color: #ef4444;
+} 

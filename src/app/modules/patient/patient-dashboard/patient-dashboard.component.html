@@ -1,0 +1,192 @@
+<div>
+  <!-- Page title and actions -->
+  <div class="mb-6 sm:flex sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">Patient Dashboard</h1>
+    <div class="mt-3 sm:mt-0">
+      <app-button 
+        icon="plus-circle" 
+        variant="primary" 
+        (clicked)="bookAppointment()">
+        Book Appointment
+      </app-button>
+    </div>
+  </div>
+  
+  <!-- Error Alert -->
+  <div *ngIf="error" class="mb-6 bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg">
+    <p>{{ error }}</p>
+  </div>
+  
+  <!-- Health Statistics Section -->
+  <section class="mb-8">
+    <h2 class="text-lg font-medium text-gray-900 mb-4">Health Statistics</h2>
+    
+    <div *ngIf="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div *ngFor="let i of [1, 2, 3, 4]" class="bg-white border border-gray-200 rounded-lg p-4 animate-pulse">
+        <div class="h-10 bg-gray-200 rounded mb-4"></div>
+        <div class="h-8 bg-gray-200 rounded mb-2 w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+    </div>
+    
+    <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <app-card *ngFor="let stat of healthStats" [shadow]="'sm'">
+        <div class="flex items-start">
+          <div [ngClass]="['p-3 rounded-full mr-4', stat.color, 'bg-opacity-10']">
+            <i [attr.data-feather]="stat.icon" class="h-6 w-6" [ngClass]="stat.color"></i>
+          </div>
+          
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">{{ stat.title }}</h3>
+            <div class="mt-1 flex items-baseline">
+              <p class="text-2xl font-semibold text-gray-900">{{ stat.value }}</p>
+              <p class="ml-1 text-sm text-gray-500">{{ stat.unit }}</p>
+            </div>
+            
+            <div class="mt-1 flex items-center">
+              <i [attr.data-feather]="getTrendIcon(stat.trend)" class="h-4 w-4 mr-1" [ngClass]="getTrendClass(stat.trend)"></i>
+              <span [ngClass]="getTrendClass(stat.trend)">{{ stat.trendValue }}</span>
+              <span class="text-gray-500 text-xs ml-1">vs last week</span>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+    
+    <div class="text-right mt-2">
+      <a routerLink="/patient/health-statistics" class="text-sm text-primary-600 hover:text-primary-700">
+        View detailed statistics <i data-feather="arrow-right" class="inline h-4 w-4"></i>
+      </a>
+    </div>
+  </section>
+  
+  <!-- Upcoming Appointments Section -->
+  <section class="mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-medium text-gray-900">Upcoming Appointments</h2>
+      <app-button 
+        variant="outline" 
+        size="sm"
+        icon="calendar" 
+        (clicked)="viewAllAppointments()">
+        View All
+      </app-button>
+    </div>
+    
+    <div *ngIf="isLoading" class="space-y-4">
+      <div *ngFor="let i of [1, 2, 3]" class="bg-white border border-gray-200 rounded-lg p-4 animate-pulse">
+        <div class="flex items-start">
+          <div class="h-12 w-12 bg-gray-200 rounded-full mr-4"></div>
+          <div class="flex-1">
+            <div class="h-5 bg-gray-200 rounded mb-2 w-1/4"></div>
+            <div class="h-4 bg-gray-200 rounded mb-4 w-3/4"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="!isLoading && appointments.length === 0" class="bg-white border border-gray-200 rounded-lg p-6 text-center">
+      <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100">
+        <i data-feather="calendar" class="h-6 w-6 text-primary-600"></i>
+      </div>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">No upcoming appointments</h3>
+      <p class="mt-1 text-sm text-gray-500">Get started by booking your first appointment with a doctor.</p>
+      <div class="mt-6">
+        <app-button 
+          variant="primary" 
+          icon="plus-circle" 
+          (clicked)="bookAppointment()">
+          Book Appointment
+        </app-button>
+      </div>
+    </div>
+    
+    <div *ngIf="!isLoading && appointments.length > 0" class="space-y-4">
+      <app-card *ngFor="let appointment of appointments" [shadow]="'sm'">
+        <div class="flex items-start">
+          <app-avatar
+            [name]="appointment.doctor.fullName"
+            size="lg"
+            class="mr-4 flex-shrink-0">
+          </app-avatar>
+          
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-medium text-gray-900">Dr. {{ appointment.doctor.fullName }}</h3>
+              
+              <span 
+                class="px-2 py-1 text-xs rounded-full capitalize"
+                [ngClass]="{
+                  'bg-success-100 text-success-800': appointment.status === 'CONFIRMED',
+                  'bg-warning-100 text-warning-800': appointment.status === 'PENDING',
+                  'bg-gray-100 text-gray-800': appointment.status === 'COMPLETED',
+                  'bg-danger-100 text-danger-800': appointment.status === 'CANCELLED'
+                }">
+                {{ appointment.status.toLowerCase() }}
+              </span>
+            </div>
+            
+            <p class="text-sm text-gray-500">{{ appointment.doctor.specialization }}</p>
+            
+            <div class="mt-2 flex items-center text-sm text-gray-500">
+              <i data-feather="calendar" class="mr-1.5 h-4 w-4 text-gray-400"></i>
+              <span>{{ appointment.date | date:'mediumDate' }}</span>
+              <i data-feather="clock" class="ml-4 mr-1.5 h-4 w-4 text-gray-400"></i>
+              <span>{{ appointment.startTime }} - {{ appointment.endTime }}</span>
+            </div>
+            
+            <div class="mt-3 flex items-center">
+              <span 
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize mr-2"
+                [ngClass]="{
+                  'bg-primary-100 text-primary-800': appointment.type === 'VIDEO_CALL',
+                  'bg-gray-100 text-gray-800': appointment.type === 'IN_PERSON'
+                }">
+                <i [data-feather]="appointment.type === 'VIDEO_CALL' ? 'video' : 'map-pin'" class="mr-1 h-3 w-3"></i>
+                {{ appointment.type === 'VIDEO_CALL' ? 'Video Call' : 'In Person' }}
+              </span>
+              
+              <div class="flex-1 text-right">
+                <app-button 
+                  *ngIf="appointment.type === 'VIDEO_CALL'"
+                  variant="primary" 
+                  size="sm"
+                  icon="video" 
+                  (clicked)="joinCall(appointment)">
+                  Join Call
+                </app-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </section>
+  
+  <!-- Health Tips Section -->
+  <section>
+    <h2 class="text-lg font-medium text-gray-900 mb-4">Health Tips</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <app-card *ngFor="let tip of healthTips" [shadow]="'sm'">
+        <div>
+          <div class="mb-3 p-2 rounded-full inline-block" [ngClass]="getImportanceClass(tip.importance)">
+            <i [attr.data-feather]="tip.icon" class="h-5 w-5"></i>
+          </div>
+          
+          <h3 class="text-lg font-medium text-gray-900 mb-1">{{ tip.title }}</h3>
+          <p class="text-gray-500">{{ tip.description }}</p>
+          
+          <div class="mt-3">
+            <span 
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
+              [ngClass]="getImportanceClass(tip.importance)">
+              {{ tip.importance }} importance
+            </span>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </section>
+</div>

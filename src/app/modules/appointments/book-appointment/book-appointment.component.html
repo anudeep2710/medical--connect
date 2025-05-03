@@ -1,0 +1,325 @@
+<div>
+  <!-- Page title -->
+  <div class="mb-6 sm:flex sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{{ isReschedule ? 'Reschedule Appointment' : 'Book Appointment' }}</h1>
+    <div class="mt-3 sm:mt-0">
+      <app-button 
+        variant="outline" 
+        icon="x" 
+        (clicked)="cancel()">
+        Cancel
+      </app-button>
+    </div>
+  </div>
+  
+  <!-- Error Alert -->
+  <div *ngIf="error" class="mb-6 bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg">
+    <p>{{ error }}</p>
+  </div>
+  
+  <!-- Success Alert -->
+  <div *ngIf="success" class="mb-6 bg-success-50 border border-success-200 text-success-700 px-4 py-3 rounded-lg">
+    <p>{{ success }}</p>
+  </div>
+  
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="mb-6 flex justify-center items-center py-8">
+    <div class="flex items-center space-x-2">
+      <svg class="animate-spin h-5 w-5 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="text-gray-700">Loading...</span>
+    </div>
+  </div>
+  
+  <!-- Form Wizard -->
+  <div *ngIf="!isLoading" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Progress Steps -->
+    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
+      <ol class="flex items-center">
+        <li class="relative pr-6 sm:pr-8 flex-1">
+          <div class="flex items-center">
+            <div [ngClass]="{
+              'flex h-6 w-6 items-center justify-center rounded-full': true,
+              'bg-primary-600': currentStep >= 1,
+              'bg-gray-300': currentStep < 1
+            }">
+              <i data-feather="user" class="h-3 w-3 text-white"></i>
+            </div>
+            <div class="ml-2 text-sm font-medium text-gray-900">Select Doctor</div>
+          </div>
+          <div class="hidden sm:block absolute top-3 right-0 w-5/6 h-0.5" [ngClass]="{
+            'bg-primary-600': currentStep > 1,
+            'bg-gray-300': currentStep <= 1
+          }"></div>
+        </li>
+        
+        <li class="relative px-6 sm:px-8 flex-1">
+          <div class="flex items-center">
+            <div [ngClass]="{
+              'flex h-6 w-6 items-center justify-center rounded-full': true,
+              'bg-primary-600': currentStep >= 2,
+              'bg-gray-300': currentStep < 2
+            }">
+              <i data-feather="calendar" class="h-3 w-3 text-white"></i>
+            </div>
+            <div class="ml-2 text-sm font-medium text-gray-900">Select Date & Time</div>
+          </div>
+          <div class="hidden sm:block absolute top-3 right-0 w-5/6 h-0.5" [ngClass]="{
+            'bg-primary-600': currentStep > 2,
+            'bg-gray-300': currentStep <= 2
+          }"></div>
+        </li>
+        
+        <li class="relative pl-6 sm:pl-8 flex-1">
+          <div class="flex items-center">
+            <div [ngClass]="{
+              'flex h-6 w-6 items-center justify-center rounded-full': true,
+              'bg-primary-600': currentStep >= 3,
+              'bg-gray-300': currentStep < 3
+            }">
+              <i data-feather="check" class="h-3 w-3 text-white"></i>
+            </div>
+            <div class="ml-2 text-sm font-medium text-gray-900">Confirm</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+    
+    <!-- Form content -->
+    <form [formGroup]="bookingForm" (ngSubmit)="submitBooking()">
+      <!-- Step 1: Select Doctor -->
+      <div *ngIf="currentStep === 1" class="p-4 sm:p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Select a Doctor</h2>
+        
+        <div class="mb-4">
+          <label for="doctorId" class="form-label">Doctor</label>
+          <select 
+            id="doctorId"
+            formControlName="doctorId"
+            class="form-input"
+            [ngClass]="{'error': bookingForm.get('doctorId')?.invalid && bookingForm.get('doctorId')?.touched}"
+            (change)="onDoctorChange()">
+            <option value="" disabled selected>Select a doctor</option>
+            <option *ngFor="let doctor of doctors" [value]="doctor.id">
+              Dr. {{ doctor.fullName }} - {{ doctor.specialization }}
+            </option>
+          </select>
+          <div *ngIf="bookingForm.get('doctorId')?.invalid && bookingForm.get('doctorId')?.touched" class="form-error">
+            Please select a doctor
+          </div>
+        </div>
+        
+        <!-- Selected Doctor Info -->
+        <div *ngIf="selectedDoctor" class="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div class="flex items-start">
+            <app-avatar
+              [name]="selectedDoctor.fullName"
+              size="lg"
+              class="mr-4 flex-shrink-0">
+            </app-avatar>
+            
+            <div>
+              <h3 class="text-lg font-medium text-gray-900">Dr. {{ selectedDoctor.fullName }}</h3>
+              <p class="text-sm text-gray-500">{{ selectedDoctor.specialization }}</p>
+              
+              <div class="mt-2 text-sm text-gray-500">
+                <p *ngIf="selectedDoctor.affiliation">
+                  <span class="font-medium">Affiliation:</span> {{ selectedDoctor.affiliation }}
+                </p>
+                <p *ngIf="selectedDoctor.yearsOfExperience">
+                  <span class="font-medium">Experience:</span> {{ selectedDoctor.yearsOfExperience }} years
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-8 flex justify-end">
+          <app-button 
+            variant="primary" 
+            icon="arrow-right"
+            iconPosition="right"
+            [disabled]="!validateStep1()"
+            (clicked)="nextStep()">
+            Continue
+          </app-button>
+        </div>
+      </div>
+      
+      <!-- Step 2: Select Date & Time -->
+      <div *ngIf="currentStep === 2" class="p-4 sm:p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Select Date & Time</h2>
+        
+        <div class="mb-6">
+          <label for="date" class="form-label">Date</label>
+          <input 
+            type="date" 
+            id="date"
+            formControlName="date"
+            class="form-input"
+            [ngClass]="{'error': bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched}"
+            [min]="today.toISOString().split('T')[0]"
+            [max]="maxDate.toISOString().split('T')[0]"
+            (change)="onDateChange()">
+          <div *ngIf="bookingForm.get('date')?.invalid && bookingForm.get('date')?.touched" class="form-error">
+            Please select a valid date
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <label class="form-label">Appointment Type</label>
+          <div class="mt-1 flex items-center space-x-4">
+            <div class="flex items-center">
+              <input 
+                type="radio" 
+                id="videoCall" 
+                formControlName="type"
+                value="VIDEO_CALL"
+                class="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+              <label for="videoCall" class="ml-2 text-sm text-gray-700">Video Call</label>
+            </div>
+            <div class="flex items-center">
+              <input 
+                type="radio" 
+                id="inPerson" 
+                formControlName="type"
+                value="IN_PERSON"
+                class="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+              <label for="inPerson" class="ml-2 text-sm text-gray-700">In Person</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <label class="form-label">Available Time Slots</label>
+          <div *ngIf="loadingTimeSlots" class="mt-2 flex items-center space-x-2">
+            <svg class="animate-spin h-5 w-5 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-sm text-gray-500">Loading available time slots...</span>
+          </div>
+          
+          <div *ngIf="!loadingTimeSlots && availableTimeSlots.length === 0 && selectedDate" class="mt-2 text-sm text-gray-500">
+            No available time slots for the selected date. Please choose another date.
+          </div>
+          
+          <div *ngIf="!loadingTimeSlots && availableTimeSlots.length > 0" class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button 
+              *ngFor="let slot of availableTimeSlots"
+              type="button"
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-center"
+              [ngClass]="{
+                'border-primary-600 bg-primary-50 text-primary-700': isTimeSlotSelected(slot),
+                'border-gray-300 bg-white text-gray-700 hover:bg-gray-50': !isTimeSlotSelected(slot) && slot.isAvailable,
+                'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed': !slot.isAvailable
+              }"
+              [disabled]="!slot.isAvailable"
+              (click)="selectTimeSlot(slot)">
+              {{ formatTime(slot.startTime) }}
+            </button>
+          </div>
+          
+          <input type="hidden" formControlName="timeSlot">
+          <div *ngIf="bookingForm.get('timeSlot')?.invalid && bookingForm.get('timeSlot')?.touched" class="form-error mt-2">
+            Please select a time slot
+          </div>
+        </div>
+        
+        <div class="mt-8 flex justify-between">
+          <app-button 
+            variant="outline" 
+            icon="arrow-left"
+            (clicked)="prevStep()">
+            Back
+          </app-button>
+          
+          <app-button 
+            variant="primary" 
+            icon="arrow-right"
+            iconPosition="right"
+            [disabled]="!validateStep2()"
+            (clicked)="nextStep()">
+            Continue
+          </app-button>
+        </div>
+      </div>
+      
+      <!-- Step 3: Confirm Details -->
+      <div *ngIf="currentStep === 3" class="p-4 sm:p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Confirm Appointment Details</h2>
+        
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <h4 class="text-xs font-medium text-gray-500 uppercase">Doctor</h4>
+              <p class="mt-1 text-sm text-gray-900">Dr. {{ selectedDoctor?.fullName }}</p>
+              <p class="text-xs text-gray-500">{{ selectedDoctor?.specialization }}</p>
+            </div>
+            
+            <div>
+              <h4 class="text-xs font-medium text-gray-500 uppercase">Date & Time</h4>
+              <p class="mt-1 text-sm text-gray-900">{{ formatDate(selectedDate) }}</p>
+              <p class="text-xs text-gray-500">
+                {{ selectedTimeSlot ? formatTime(selectedTimeSlot.startTime) + ' - ' + formatTime(selectedTimeSlot.endTime) : '' }}
+              </p>
+            </div>
+            
+            <div>
+              <h4 class="text-xs font-medium text-gray-500 uppercase">Appointment Type</h4>
+              <p class="mt-1 text-sm text-gray-900">{{ getAppointmentTypeLabel(bookingForm.get('type')?.value) }}</p>
+            </div>
+            
+            <div>
+              <h4 class="text-xs font-medium text-gray-500 uppercase">Patient</h4>
+              <p class="mt-1 text-sm text-gray-900">{{ currentUser?.fullName }}</p>
+              <p class="text-xs text-gray-500">{{ currentUser?.email }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <label for="reasonForVisit" class="form-label">Reason for Visit</label>
+          <textarea 
+            id="reasonForVisit"
+            formControlName="reasonForVisit"
+            rows="3"
+            placeholder="Please describe your symptoms or reason for this appointment..."
+            class="form-input">
+          </textarea>
+        </div>
+        
+        <div class="mb-6">
+          <label for="notes" class="form-label">Additional Notes</label>
+          <textarea 
+            id="notes"
+            formControlName="notes"
+            rows="2"
+            placeholder="Any additional information you'd like the doctor to know..."
+            class="form-input">
+          </textarea>
+        </div>
+        
+        <div class="mt-8 flex justify-between">
+          <app-button 
+            variant="outline" 
+            icon="arrow-left"
+            (clicked)="prevStep()">
+            Back
+          </app-button>
+          
+          <app-button 
+            type="submit" 
+            variant="primary" 
+            icon="check"
+            [loading]="isSubmitting"
+            [disabled]="isSubmitting">
+            {{ isReschedule ? 'Reschedule Appointment' : 'Book Appointment' }}
+          </app-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,244 @@
+<div class="h-[calc(100vh-56px)] flex flex-col bg-gray-900 text-white relative">
+  <!-- Connection Overlay -->
+  <div *ngIf="callState === 'connecting'" class="absolute inset-0 bg-gray-900 bg-opacity-75 z-20 flex items-center justify-center">
+    <div class="text-center">
+      <div class="inline-block animate-spin h-8 w-8 border-4 border-t-transparent border-white rounded-full mb-4"></div>
+      <h2 class="text-xl font-medium">Connecting...</h2>
+      <p *ngIf="appointment" class="text-gray-300 mt-2">
+        Joining call with {{ currentUser?.role === 'PATIENT' ? 'Dr. ' + appointment.doctor.fullName : appointment.patient.fullName }}
+      </p>
+    </div>
+  </div>
+  
+  <!-- Failed Overlay -->
+  <div *ngIf="callState === 'failed'" class="absolute inset-0 bg-gray-900 bg-opacity-75 z-20 flex items-center justify-center">
+    <div class="text-center max-w-md px-4">
+      <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-danger-100 mb-4">
+        <i data-feather="x" class="h-6 w-6 text-danger-600"></i>
+      </div>
+      <h2 class="text-xl font-medium">Call Failed</h2>
+      <p class="text-gray-300 mt-2">{{ error || 'Could not establish connection. Please try again later.' }}</p>
+      <div class="mt-6">
+        <app-button 
+          variant="primary" 
+          (clicked)="navigateBack()">
+          Return to Dashboard
+        </app-button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- End Call Overlay -->
+  <div *ngIf="callState === 'ended'" class="absolute inset-0 bg-gray-900 bg-opacity-90 z-20 flex items-center justify-center">
+    <div *ngIf="!showPostCallNotes" class="text-center">
+      <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-700 mb-4">
+        <i data-feather="phone-off" class="h-6 w-6 text-white"></i>
+      </div>
+      <h2 class="text-xl font-medium">Call Ended</h2>
+      <p class="text-gray-300 mt-2">
+        The call has been disconnected
+      </p>
+      <div class="mt-6">
+        <app-button 
+          variant="primary" 
+          (clicked)="navigateBack()">
+          Return to Dashboard
+        </app-button>
+      </div>
+    </div>
+    
+    <!-- Post-call Notes Form -->
+    <div *ngIf="showPostCallNotes" class="max-w-md w-full mx-4 bg-gray-800 rounded-lg p-6">
+      <h2 class="text-xl font-medium mb-4">Call Summary</h2>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-300">
+          Call with {{ currentUser?.role === 'PATIENT' ? 'Dr. ' + (appointment?.doctor?.fullName || 'Doctor') : (appointment?.patient?.fullName || 'Patient') }}
+        </p>
+        <p class="text-sm text-gray-300">
+          Duration: {{ formatDuration(callDuration) }}
+        </p>
+      </div>
+      
+      <div *ngIf="notesSaved" class="mb-4 bg-success-100 text-success-800 px-4 py-3 rounded-lg">
+        <p>Notes saved successfully!</p>
+      </div>
+      
+      <form [formGroup]="notesForm" (ngSubmit)="submitNotes()">
+        <div class="mb-4">
+          <label for="notes" class="block text-sm font-medium text-gray-300 mb-1">
+            {{ currentUser?.role === 'DOCTOR' ? 'Add notes about this appointment' : 'Add any follow-up questions or notes' }}
+          </label>
+          <textarea 
+            id="notes"
+            formControlName="notes"
+            rows="4"
+            class="w-full rounded-lg border-gray-700 bg-gray-700 text-white"
+            placeholder="Enter notes here...">
+          </textarea>
+        </div>
+        
+        <div class="flex justify-between">
+          <app-button 
+            variant="outline" 
+            (clicked)="navigateBack()">
+            Skip
+          </app-button>
+          
+          <app-button 
+            type="submit" 
+            variant="primary"
+            [loading]="isSubmittingNotes"
+            [disabled]="isSubmittingNotes">
+            Save Notes
+          </app-button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Header -->
+  <div class="p-4 flex items-center justify-between bg-gray-800 shadow-md">
+    <div class="flex items-center">
+      <h1 class="text-lg font-medium">
+        {{ currentUser?.role === 'PATIENT' ? 'Dr. ' + (appointment?.doctor?.fullName || 'Doctor') : (appointment?.patient?.fullName || 'Patient') }}
+      </h1>
+      <span *ngIf="callState === 'connected'" class="ml-3 text-sm text-gray-300">
+        {{ formatDuration(callDuration) }}
+      </span>
+    </div>
+    
+    <div *ngIf="isRecording" class="flex items-center text-danger-500">
+      <span class="animate-pulse mr-2 h-2 w-2 rounded-full bg-danger-500"></span>
+      <span class="text-sm">Recording</span>
+    </div>
+  </div>
+  
+  <!-- Main Video Area -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Remote Participant (Main Video) -->
+    <div *ngIf="getOtherParticipant()" class="flex-1 bg-gray-800 relative overflow-hidden">
+      <video 
+        *ngIf="getOtherParticipant()?.stream && getOtherParticipant()?.video"
+        [srcObject]="getOtherParticipant()?.stream"
+        autoplay
+        class="w-full h-full object-cover">
+      </video>
+      
+      <div 
+        *ngIf="!getOtherParticipant()?.video"
+        class="absolute inset-0 flex items-center justify-center bg-gray-700">
+        <div class="text-center">
+          <app-avatar 
+            [name]="getOtherParticipant()?.name"
+            size="xl">
+          </app-avatar>
+          <p class="mt-4 text-gray-300">
+            Camera is turned off
+          </p>
+        </div>
+      </div>
+      
+      <div class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-3 py-1 rounded-md text-sm">
+        {{ getOtherParticipant()?.name }}
+        <span *ngIf="!getOtherParticipant()?.audio" class="ml-2">
+          <i data-feather="mic-off" class="h-4 w-4 inline"></i>
+        </span>
+      </div>
+    </div>
+    
+    <!-- Placeholder if no remote participant -->
+    <div *ngIf="!getOtherParticipant() && callState !== 'connecting'" class="flex-1 bg-gray-800 flex items-center justify-center">
+      <div class="text-center">
+        <div class="h-16 w-16 rounded-full bg-gray-700 flex items-center justify-center mx-auto mb-4">
+          <i data-feather="user" class="h-8 w-8"></i>
+        </div>
+        <h2 class="text-xl">Waiting for other participant to join...</h2>
+      </div>
+    </div>
+    
+    <!-- Local Participant (Picture-in-Picture) -->
+    <div 
+      *ngIf="getLocalParticipant()"
+      class="absolute bottom-20 right-4 w-48 h-36 bg-gray-700 rounded-lg overflow-hidden shadow-lg border-2 border-gray-600">
+      <video 
+        *ngIf="getLocalParticipant()?.stream && getLocalParticipant()?.video"
+        [srcObject]="getLocalParticipant()?.stream"
+        autoplay
+        muted
+        class="w-full h-full object-cover">
+      </video>
+      
+      <div 
+        *ngIf="!getLocalParticipant()?.video"
+        class="absolute inset-0 flex items-center justify-center bg-gray-700">
+        <app-avatar 
+          [name]="getLocalParticipant()?.name"
+          size="md">
+        </app-avatar>
+      </div>
+      
+      <div class="absolute bottom-1 left-1 text-white bg-black bg-opacity-50 px-1.5 py-0.5 rounded-md text-xs">
+        You
+        <span *ngIf="!isAudioEnabled" class="ml-1">
+          <i data-feather="mic-off" class="h-3 w-3 inline"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Call Controls -->
+  <div class="p-4 bg-gray-800 border-t border-gray-700 flex items-center justify-center">
+    <div class="flex items-center space-x-4">
+      <button 
+        class="p-3 rounded-full focus:outline-none"
+        [ngClass]="{
+          'bg-gray-700 hover:bg-gray-600': isAudioEnabled,
+          'bg-danger-600 hover:bg-danger-700': !isAudioEnabled
+        }"
+        (click)="toggleAudio()">
+        <i [data-feather]="isAudioEnabled ? 'mic' : 'mic-off'" class="h-5 w-5"></i>
+      </button>
+      
+      <button 
+        class="p-3 rounded-full focus:outline-none"
+        [ngClass]="{
+          'bg-gray-700 hover:bg-gray-600': isVideoEnabled,
+          'bg-danger-600 hover:bg-danger-700': !isVideoEnabled
+        }"
+        (click)="toggleVideo()">
+        <i [data-feather]="isVideoEnabled ? 'video' : 'video-off'" class="h-5 w-5"></i>
+      </button>
+      
+      <button 
+        class="p-3 rounded-full focus:outline-none"
+        [ngClass]="{
+          'bg-gray-700 hover:bg-gray-600': !isScreenSharing,
+          'bg-success-600 hover:bg-success-700': isScreenSharing
+        }"
+        (click)="toggleScreenSharing()">
+        <i [data-feather]="'monitor'" class="h-5 w-5"></i>
+      </button>
+      
+      <button 
+        *ngIf="!isRecording"
+        class="p-3 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none"
+        (click)="startRecording()">
+        <i [data-feather]="'circle'" class="h-5 w-5 text-danger-500"></i>
+      </button>
+      
+      <button 
+        *ngIf="isRecording"
+        class="p-3 rounded-full bg-danger-600 hover:bg-danger-700 focus:outline-none"
+        (click)="stopRecording()">
+        <i [data-feather]="'square'" class="h-5 w-5"></i>
+      </button>
+      
+      <button 
+        class="p-3 rounded-full bg-danger-600 hover:bg-danger-700 focus:outline-none"
+        (click)="endCall()">
+        <i [data-feather]="'phone-off'" class="h-5 w-5"></i>
+      </button>
+    </div>
+  </div>
+</div>

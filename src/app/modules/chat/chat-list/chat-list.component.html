@@ -1,0 +1,119 @@
+<div class="flex h-[calc(100vh-136px)]">
+  <!-- Chat List -->
+  <div class="w-full lg:w-80 border-r border-gray-200 bg-white overflow-hidden flex flex-col"
+       [ngClass]="{'hidden lg:flex': selectedChat}">
+    <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+      <h1 class="text-lg font-medium text-gray-900">Messages</h1>
+    </div>
+    
+    <!-- Loading skeleton -->
+    <div *ngIf="isLoading" class="flex-1 p-3 overflow-y-auto space-y-3">
+      <div *ngFor="let i of [1, 2, 3, 4, 5]" class="animate-pulse">
+        <div class="py-3 flex">
+          <div class="w-10 h-10 bg-gray-200 rounded-full mr-3 flex-shrink-0"></div>
+          <div class="flex-grow">
+            <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+          </div>
+          <div class="w-12 flex-shrink-0">
+            <div class="h-3 bg-gray-200 rounded w-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="error" class="flex-1 p-6 flex items-center justify-center">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-danger-100 mb-4">
+          <i data-feather="alert-triangle" class="h-6 w-6 text-danger-600"></i>
+        </div>
+        <h3 class="text-sm font-medium text-gray-900">Something went wrong</h3>
+        <p class="mt-1 text-sm text-gray-500">{{ error }}</p>
+        <div class="mt-4">
+          <app-button 
+            variant="outline" 
+            size="sm"
+            (clicked)="loadChats()">
+            Try Again
+          </app-button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Empty state -->
+    <div *ngIf="!isLoading && !error && chats.length === 0" class="flex-1 p-6 flex items-center justify-center">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 mb-4">
+          <i data-feather="message-circle" class="h-6 w-6 text-primary-600"></i>
+        </div>
+        <h3 class="text-sm font-medium text-gray-900">No messages yet</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          When you have conversations with doctors or patients, they will appear here.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Chat list -->
+    <div *ngIf="!isLoading && !error && chats.length > 0" class="flex-1 overflow-y-auto">
+      <div 
+        *ngFor="let chat of chats; trackBy: trackByFn"
+        class="px-3 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+        [ngClass]="{'bg-primary-50': selectedChat?.id === chat.id}"
+        (click)="openChat(chat.id)">
+        
+        <div class="flex items-start">
+          <app-avatar
+            [name]="getChatParticipant(chat)?.fullName"
+            [status]="getChatParticipant(chat)?.isOnline ? 'online' : 'offline'"
+            size="md"
+            class="mr-3 flex-shrink-0">
+          </app-avatar>
+          
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-medium text-gray-900 truncate">
+                {{ getChatParticipant(chat)?.fullName }}
+              </h3>
+              <span class="text-xs text-gray-500">
+                {{ getLastMessageTime(chat) }}
+              </span>
+            </div>
+            
+            <p class="text-sm text-gray-500 truncate">
+              {{ chat.lastMessage?.text || 'No messages yet' }}
+            </p>
+          </div>
+        </div>
+        
+        <div *ngIf="chat.unreadCount > 0" class="mt-1 flex justify-end">
+          <span class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary-600 text-xs font-medium text-white">
+            {{ chat.unreadCount }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Conversation or Empty State -->
+  <div class="hidden lg:block flex-1 bg-gray-50" [ngClass]="{'lg:block': selectedChat}">
+    <div *ngIf="!selectedChat" class="h-full flex items-center justify-center p-6">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary-100 mb-4">
+          <i data-feather="message-circle" class="h-8 w-8 text-primary-600"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">Select a conversation</h3>
+        <p class="mt-1 text-gray-500 max-w-md">
+          Choose a conversation from the list to start chatting or check your message history.
+        </p>
+      </div>
+    </div>
+    
+    <app-chat-conversation
+      *ngIf="selectedChat"
+      [chat]="selectedChat"
+      [currentUser]="currentUser"
+      (closeChatEvent)="closeChat()">
+    </app-chat-conversation>
+  </div>
+</div>

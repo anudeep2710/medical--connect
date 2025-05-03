@@ -1,0 +1,57 @@
+<div>
+  <h1>Health Statistics</h1>
+  <p>Monitor your vital signs and health metrics over time</p>
+  
+  <div *ngIf="error">
+    <p>{{error}}</p>
+  </div>
+  
+  <div>
+    <span>Time Range:</span>
+    <div>
+      <button (click)="changeTimeRange('7d')">7d</button>
+      <button (click)="changeTimeRange('1m')">1m</button>
+      <button (click)="changeTimeRange('3m')">3m</button>
+      <button (click)="changeTimeRange('6m')">6m</button>
+      <button (click)="changeTimeRange('1y')">1y</button>
+    </div>
+  </div>
+  
+  <div *ngIf="isLoading">
+    <p>Loading...</p>
+  </div>
+  
+  <div *ngIf="!isLoading">
+    <!-- Heart Rate -->
+    <div>
+      <h3>Heart Rate</h3>
+      <div>
+        <p>Health stats display here</p>
+      </div>
+    </div>
+    
+    <!-- Blood Pressure -->
+    <div>
+      <h3>Blood Pressure</h3>
+      <div>
+        <p>Blood pressure stats display here</p>
+      </div>
+    </div>
+    
+    <!-- Steps -->
+    <div>
+      <h3>Steps</h3>
+      <div>
+        <p>Steps data display here</p>
+      </div>
+    </div>
+    
+    <!-- Sleep -->
+    <div>
+      <h3>Sleep</h3>
+      <div>
+        <p>Sleep stats display here</p>
+      </div>
+    </div>
+  </div>
+</div>
