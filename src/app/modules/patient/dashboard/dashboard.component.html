@@ -1,28 +1,28 @@
 <!-- Loading State -->
 <div *ngIf="isLoading" class="flex items-center justify-center h-full min-h-[400px]">
   <div class="flex flex-col items-center space-y-4">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-    <p class="text-gray-600">Loading your dashboard...</p>
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary dark:border-primary-dark"></div>
+    <p class="text-gray-600 dark:text-text-secondary-dark">Loading your dashboard...</p>
   </div>
 </div>
 
 <!-- Error State -->
-<div *ngIf="!isLoading && errorMessage" class="bg-red-50 p-6 rounded-lg text-red-600 max-w-2xl mx-auto">
+<div *ngIf="!isLoading && errorMessage" class="bg-red-50 dark:bg-error-dark dark:bg-opacity-20 p-6 rounded-lg text-red-600 dark:text-error-dark max-w-2xl mx-auto">
   <div class="flex items-center space-x-3">
     <i appFeather="alert-circle" class="h-6 w-6"></i>
     <p>{{ errorMessage }}</p>
   </div>
 </div>
 
-<div *ngIf="!isLoading && !errorMessage && currentUser" class="space-y-6">
+<div *ngIf="!isLoading && !errorMessage && currentUser" class="space-y-6 bg-background dark:bg-background-dark">
   <!-- Welcome Section -->
-  <div class="bg-white rounded-lg p-6 shadow">
+  <div class="bg-surface dark:bg-surface-dark rounded-lg p-6 shadow border border-border dark:border-border-dark">
     <div class="flex items-center">
-      <img [src]="currentUser.avatar || 'assets/images/default-avatar.svg'" alt="User Avatar" 
+      <img [src]="currentUser.avatar || 'assets/images/default-avatar.svg'" alt="User Avatar"
         class="h-16 w-16 rounded-full object-cover mr-4">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Welcome back, {{ currentUser.fullName }}</h1>
-        <p class="text-gray-600">Let's take care of your health today</p>
+        <h1 class="text-2xl font-bold text-text-primary dark:text-text-primary-dark">Welcome back, {{ currentUser.fullName }}</h1>
+        <p class="text-text-secondary dark:text-text-secondary-dark">Let's take care of your health today</p>
       </div>
     </div>
   </div>
@@ -30,60 +30,60 @@
   <!-- Stats Overview -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Upcoming Appointments -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-surface dark:bg-surface-dark rounded-lg shadow p-4 border border-border dark:border-border-dark">
       <div class="flex items-center justify-between mb-2">
-        <div class="text-gray-500">Upcoming Appointments</div>
-        <div class="bg-blue-100 p-2 rounded-full">
-          <i appFeather="calendar" class="text-primary-600 h-5 w-5"></i>
+        <div class="text-text-secondary dark:text-text-secondary-dark">Upcoming Appointments</div>
+        <div class="bg-primary-50 dark:bg-primary-dark dark:bg-opacity-20 p-2 rounded-full">
+          <i appFeather="calendar" class="text-primary dark:text-primary-dark h-5 w-5"></i>
         </div>
       </div>
-      <div class="text-2xl font-bold">{{ upcomingAppointments }}</div>
-      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+      <div class="text-2xl font-bold text-text-primary dark:text-text-primary-dark">{{ upcomingAppointments }}</div>
+      <a [routerLink]="['/appointments']" class="text-primary dark:text-primary-dark text-sm hover:underline inline-flex items-center">
         View appointments
         <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
       </a>
     </div>
 
     <!-- Unread Messages -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-surface dark:bg-surface-dark rounded-lg shadow p-4 border border-border dark:border-border-dark">
       <div class="flex items-center justify-between mb-2">
-        <div class="text-gray-500">Unread Messages</div>
-        <div class="bg-green-100 p-2 rounded-full">
-          <i appFeather="message-circle" class="text-green-600 h-5 w-5"></i>
+        <div class="text-text-secondary dark:text-text-secondary-dark">Unread Messages</div>
+        <div class="bg-success-50 dark:bg-success-dark dark:bg-opacity-20 p-2 rounded-full">
+          <i appFeather="message-circle" class="text-success dark:text-success-dark h-5 w-5"></i>
         </div>
       </div>
-      <div class="text-2xl font-bold">{{ unreadMessages }}</div>
-      <a [routerLink]="['/chat']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+      <div class="text-2xl font-bold text-text-primary dark:text-text-primary-dark">{{ unreadMessages }}</div>
+      <a [routerLink]="['/chat']" class="text-primary dark:text-primary-dark text-sm hover:underline inline-flex items-center">
         View messages
         <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
       </a>
     </div>
 
     <!-- Pending Prescriptions -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-surface dark:bg-surface-dark rounded-lg shadow p-4 border border-border dark:border-border-dark">
       <div class="flex items-center justify-between mb-2">
-        <div class="text-gray-500">Pending Prescriptions</div>
-        <div class="bg-purple-100 p-2 rounded-full">
-          <i appFeather="clipboard" class="text-purple-600 h-5 w-5"></i>
+        <div class="text-text-secondary dark:text-text-secondary-dark">Pending Prescriptions</div>
+        <div class="bg-accent-50 dark:bg-accent-dark dark:bg-opacity-20 p-2 rounded-full">
+          <i appFeather="clipboard" class="text-accent dark:text-accent-dark h-5 w-5"></i>
         </div>
       </div>
-      <div class="text-2xl font-bold">{{ pendingPrescriptions }}</div>
-      <a [routerLink]="['/prescriptions']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+      <div class="text-2xl font-bold text-text-primary dark:text-text-primary-dark">{{ pendingPrescriptions }}</div>
+      <a [routerLink]="['/prescriptions']" class="text-primary dark:text-primary-dark text-sm hover:underline inline-flex items-center">
         View prescriptions
         <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
       </a>
     </div>
 
     <!-- Last Checkup -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-surface dark:bg-surface-dark rounded-lg shadow p-4 border border-border dark:border-border-dark">
       <div class="flex items-center justify-between mb-2">
-        <div class="text-gray-500">Last Checkup</div>
-        <div class="bg-yellow-100 p-2 rounded-full">
-          <i appFeather="activity" class="text-yellow-600 h-5 w-5"></i>
+        <div class="text-text-secondary dark:text-text-secondary-dark">Last Checkup</div>
+        <div class="bg-warning-50 dark:bg-warning-dark dark:bg-opacity-20 p-2 rounded-full">
+          <i appFeather="activity" class="text-warning dark:text-warning-dark h-5 w-5"></i>
         </div>
       </div>
-      <div class="text-2xl font-bold">{{ lastCheckup | date:'mediumDate' }}</div>
-      <a [routerLink]="['/medical-records']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+      <div class="text-2xl font-bold text-text-primary dark:text-text-primary-dark">{{ lastCheckup | date:'mediumDate' }}</div>
+      <a [routerLink]="['/medical-records']" class="text-primary dark:text-primary-dark text-sm hover:underline inline-flex items-center">
         View history
         <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
       </a>
@@ -93,87 +93,87 @@
   <!-- Health Metrics and Actions Row -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Health Metrics -->
-    <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
+    <div class="lg:col-span-2 bg-surface dark:bg-surface-dark rounded-lg shadow p-6 border border-border dark:border-border-dark">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold">Your Health Metrics</h2>
-        <a [routerLink]="['/health-metrics']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+        <h2 class="text-lg font-semibold text-text-primary dark:text-text-primary-dark">Your Health Metrics</h2>
+        <a [routerLink]="['/health-metrics']" class="text-primary dark:text-primary-dark text-sm hover:underline inline-flex items-center">
           View detailed metrics
           <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
         </a>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <!-- Health Metrics Cards -->
-        <div *ngFor="let metric of healthMetrics" class="border rounded-lg p-4">
+        <div *ngFor="let metric of healthMetrics" class="border border-border dark:border-border-dark rounded-lg p-4">
           <div class="flex items-center mb-2">
-            <div [ngClass]="'bg-' + metric.color + '-100 p-2 rounded-full mr-2'">
-              <i [appFeather]="metric.icon" [ngClass]="'text-' + metric.color + '-600 h-4 w-4'"></i>
+            <div [ngClass]="'bg-' + metric.color + '-100 dark:bg-' + metric.color + '-600 dark:bg-opacity-20 p-2 rounded-full mr-2'">
+              <i [appFeather]="metric.icon" [ngClass]="'text-' + metric.color + '-600 dark:text-' + metric.color + '-400 h-4 w-4'"></i>
             </div>
-            <span class="text-gray-600 text-sm">{{ metric.name }}</span>
+            <span class="text-text-secondary dark:text-text-secondary-dark text-sm">{{ metric.name }}</span>
           </div>
           <div class="flex items-baseline">
-            <span class="text-xl font-bold">{{ metric.value }}</span>
-            <span class="ml-1 text-gray-500 text-sm">{{ metric.unit }}</span>
+            <span class="text-xl font-bold text-text-primary dark:text-text-primary-dark">{{ metric.value }}</span>
+            <span class="ml-1 text-text-secondary dark:text-text-secondary-dark text-sm">{{ metric.unit }}</span>
           </div>
-          <span [ngClass]="'text-' + metric.statusColor + '-600 text-xs'">{{ metric.status }}</span>
+          <span [ngClass]="'text-' + metric.statusColor + '-600 dark:text-' + metric.statusColor + '-400 text-xs'">{{ metric.status }}</span>
         </div>
       </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="bg-white rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
+    <div class="bg-surface dark:bg-surface-dark rounded-lg shadow p-6 border border-border dark:border-border-dark">
+      <h2 class="text-lg font-semibold mb-4 text-text-primary dark:text-text-primary-dark">Quick Actions</h2>
       <div class="space-y-3">
-        <button (click)="bookAppointment()" class="w-full flex items-center justify-between p-3 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors">
+        <button (click)="bookAppointment()" class="w-full flex items-center justify-between p-3 bg-primary-50 dark:bg-primary-dark dark:bg-opacity-10 hover:bg-primary-100 dark:hover:bg-opacity-20 rounded-lg transition-colors text-text-primary dark:text-text-primary-dark">
           <div class="flex items-center">
-            <div class="bg-primary-100 p-2 rounded-full mr-3">
-              <i appFeather="calendar" class="text-primary-600 h-5 w-5"></i>
+            <div class="bg-primary-100 dark:bg-primary-dark dark:bg-opacity-20 p-2 rounded-full mr-3">
+              <i appFeather="calendar" class="text-primary dark:text-primary-dark h-5 w-5"></i>
             </div>
             <span>Book Appointment</span>
           </div>
-          <i appFeather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+          <i appFeather="chevron-right" class="text-text-secondary dark:text-text-secondary-dark h-5 w-5"></i>
         </button>
 
-        <button (click)="startHealthAssistant()" class="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+        <button (click)="startHealthAssistant()" class="w-full flex items-center justify-between p-3 bg-success-50 dark:bg-success-dark dark:bg-opacity-10 hover:bg-success-100 dark:hover:bg-opacity-20 rounded-lg transition-colors text-text-primary dark:text-text-primary-dark">
           <div class="flex items-center">
-            <div class="bg-green-100 p-2 rounded-full mr-3">
-              <i appFeather="cpu" class="text-green-600 h-5 w-5"></i>
+            <div class="bg-success-100 dark:bg-success-dark dark:bg-opacity-20 p-2 rounded-full mr-3">
+              <i appFeather="cpu" class="text-success dark:text-success-dark h-5 w-5"></i>
             </div>
             <span>Health Assistant</span>
           </div>
-          <i appFeather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+          <i appFeather="chevron-right" class="text-text-secondary dark:text-text-secondary-dark h-5 w-5"></i>
         </button>
 
-        <button (click)="viewMedicalRecords()" class="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+        <button (click)="viewMedicalRecords()" class="w-full flex items-center justify-between p-3 bg-accent-50 dark:bg-accent-dark dark:bg-opacity-10 hover:bg-accent-100 dark:hover:bg-opacity-20 rounded-lg transition-colors text-text-primary dark:text-text-primary-dark">
           <div class="flex items-center">
-            <div class="bg-blue-100 p-2 rounded-full mr-3">
-              <i appFeather="file-text" class="text-blue-600 h-5 w-5"></i>
+            <div class="bg-accent-100 dark:bg-accent-dark dark:bg-opacity-20 p-2 rounded-full mr-3">
+              <i appFeather="file-text" class="text-accent dark:text-accent-dark h-5 w-5"></i>
             </div>
             <span>Medical Records</span>
           </div>
-          <i appFeather="chevron-right" class="text-gray-400 h-5 w-5"></i>
+          <i appFeather="chevron-right" class="text-text-secondary dark:text-text-secondary-dark h-5 w-5"></i>
         </button>
       </div>
     </div>
   </div>
 
   <!-- Your Doctors -->
-  <div class="bg-white rounded-lg shadow p-6">
+  <div class="bg-surface dark:bg-surface-dark rounded-lg shadow p-6 border border-border dark:border-border-dark">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold">Your Doctors</h2>
-      <a [routerLink]="['/appointments']" class="text-primary-600 text-sm hover:underline inline-flex items-center">
+      <h2 class="text-lg font-semibold text-text-primary dark:text-text-primary-dark">Your Doctors</h2>
+      <a [routerLink]="['/appointments']" class="text-primary dark:text-primary-dark text-sm hover:underline inline-flex items-center">
         Find more doctors
         <i appFeather="chevron-right" class="h-4 w-4 ml-1"></i>
       </a>
     </div>
-    
+
     <!-- Empty State for Doctors -->
     <div *ngIf="!doctorsList || doctorsList.length === 0" class="text-center py-8">
-      <div class="bg-gray-50 rounded-full p-4 w-16 h-16 mx-auto mb-4">
-        <i appFeather="user-x" class="h-8 w-8 text-gray-400"></i>
+      <div class="bg-muted dark:bg-muted-dark rounded-full p-4 w-16 h-16 mx-auto mb-4">
+        <i appFeather="user-x" class="h-8 w-8 text-text-secondary dark:text-text-secondary-dark"></i>
       </div>
-      <h3 class="text-lg font-medium text-gray-900 mb-1">No Doctors Yet</h3>
-      <p class="text-gray-500 mb-4">You haven't connected with any doctors yet.</p>
-      <button (click)="bookAppointment()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+      <h3 class="text-lg font-medium text-text-primary dark:text-text-primary-dark mb-1">No Doctors Yet</h3>
+      <p class="text-text-secondary dark:text-text-secondary-dark mb-4">You haven't connected with any doctors yet.</p>
+      <button (click)="bookAppointment()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white dark:text-text-primary-dark bg-primary hover:bg-primary-hover dark:bg-primary-dark dark:hover:bg-primary-dark-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-primary-dark">
         <i appFeather="plus" class="h-4 w-4 mr-2"></i>
         Find a Doctor
       </button>
@@ -181,23 +181,23 @@
 
     <!-- Doctors List -->
     <div *ngIf="doctorsList && doctorsList.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let doctor of doctorsList" class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+      <div *ngFor="let doctor of doctorsList" class="border border-border dark:border-border-dark rounded-lg p-4 hover:shadow-md transition-shadow">
         <div class="flex items-center mb-3">
           <img [src]="doctor.avatar" [alt]="doctor.name" class="h-12 w-12 rounded-full mr-3 object-cover">
           <div>
-            <h3 class="font-medium">{{ doctor.name }}</h3>
-            <p class="text-sm text-gray-500">{{ doctor.specialization }}</p>
+            <h3 class="font-medium text-text-primary dark:text-text-primary-dark">{{ doctor.name }}</h3>
+            <p class="text-sm text-text-secondary dark:text-text-secondary-dark">{{ doctor.specialization }}</p>
           </div>
         </div>
-        <div class="flex items-center text-yellow-500 mb-3">
+        <div class="flex items-center text-warning dark:text-warning-dark mb-3">
           <i appFeather="star" class="h-4 w-4 fill-current"></i>
           <span class="ml-1 text-sm">{{ doctor.rating }}/5</span>
         </div>
         <div class="flex space-x-2">
-          <button (click)="bookAppointment()" class="flex-1 bg-primary-50 hover:bg-primary-100 text-primary-700 py-1.5 px-3 rounded text-sm">
+          <button (click)="bookAppointment()" class="flex-1 bg-primary-50 dark:bg-primary-dark dark:bg-opacity-10 hover:bg-primary-100 dark:hover:bg-opacity-20 text-primary dark:text-primary-dark py-1.5 px-3 rounded text-sm">
             Book
           </button>
-          <button (click)="chatWithDoctor(doctor.id)" class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 py-1.5 px-3 rounded text-sm">
+          <button (click)="chatWithDoctor(doctor.id)" class="flex-1 bg-success-50 dark:bg-success-dark dark:bg-opacity-10 hover:bg-success-100 dark:hover:bg-opacity-20 text-success dark:text-success-dark py-1.5 px-3 rounded text-sm">
             Chat
           </button>
         </div>

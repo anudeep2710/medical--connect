@@ -24,17 +24,17 @@ module.exports = {
         // Background colors
         background: {
           DEFAULT: '#F9FAFB',
-          dark: '#1F2937',
+          dark: '#111827',
         },
         // Surface colors for cards, etc.
         surface: {
           DEFAULT: '#FFFFFF',
-          dark: '#374151',
+          dark: '#1F2937',
         },
         // Muted sections
         muted: {
           DEFAULT: '#F3F4F6',
-          dark: '#4B5563',
+          dark: '#374151',
         },
         // Text colors
         text: {
@@ -46,7 +46,7 @@ module.exports = {
         // Border colors
         border: {
           DEFAULT: '#E5E7EB',
-          dark: '#4B5563',
+          dark: '#374151',
         },
         // Status colors
         success: {
@@ -174,4 +174,4 @@ module.exports = {
   },
   plugins: [],
   important: true,
-} 
+}

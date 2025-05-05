@@ -1,8 +1,8 @@
 <div class="h-screen flex overflow-hidden bg-background dark:bg-background-dark">
   <!-- Sidebar - Redesigned with better shadows and spacing -->
-  <aside [ngClass]="{'w-72': isSidebarOpen, 'w-20': !isSidebarOpen}" 
-         class="transition-all duration-300 ease-in-out bg-surface dark:bg-surface-dark shadow-xl relative z-20 flex flex-col border-r border-border dark:border-border-dark">
-    
+  <aside [ngClass]="{'w-72': isSidebarOpen, 'w-20': !isSidebarOpen}"
+         class="transition-all duration-300 ease-in-out bg-surface dark:bg-gray-900 shadow-xl relative z-20 flex flex-col border-r border-border dark:border-border-dark">
+
     <!-- Logo with modern style -->
     <div class="flex items-center justify-between py-6 px-5 border-b border-border dark:border-border-dark">
       <div class="flex items-center">
@@ -11,7 +11,7 @@
             <path d="M17 9h-3V6c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v3H7c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h3v3c0 .6.4 1 1 1h2c.6 0 1-.4 1-1v-3h3c.6 0 1-.4 1-1v-2c0-.6-.4-1-1-1z" fill="white"/>
           </svg>
         </div>
-        <h1 *ngIf="isSidebarOpen" class="ml-3 text-xl font-bold text-text-primary dark:text-text-primary-dark tracking-tight transition-opacity">
+        <h1 *ngIf="isSidebarOpen" class="ml-3 text-xl font-bold text-text-primary dark:text-white tracking-tight transition-opacity">
           HealthConnect
         </h1>
       </div>
@@ -19,54 +19,54 @@
         <i appFeather="menu" class="h-5 w-5"></i>
       </button>
     </div>
-    
+
     <!-- Navigation Menu - Improved styling -->
     <nav class="mt-8 px-4 flex-1 overflow-y-auto hide-scrollbar">
       <div class="space-y-1.5">
         <!-- Dashboard -->
-        <a [routerLink]="dashboardLink" 
-          [ngClass]="isActive('dashboard') ? 
-            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' : 
+        <a [routerLink]="dashboardLink"
+          [ngClass]="isActive('dashboard') ?
+            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' :
             'text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark border-l-4 border-transparent'"
           class="group flex items-center px-4 py-3.5 font-medium rounded-r-lg transition-all">
           <i appFeather="home" class="h-5 w-5 mr-3"></i>
           <span *ngIf="isSidebarOpen" class="transition-opacity text-sm">Dashboard</span>
         </a>
-        
+
         <!-- Appointments -->
-        <a [routerLink]="'/appointments'" 
-          [ngClass]="isActive('appointments') ? 
-            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' : 
+        <a [routerLink]="'/appointments'"
+          [ngClass]="isActive('appointments') ?
+            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' :
             'text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark border-l-4 border-transparent'"
           class="group flex items-center px-4 py-3.5 font-medium rounded-r-lg transition-all">
           <i appFeather="calendar" class="h-5 w-5 mr-3"></i>
           <span *ngIf="isSidebarOpen" class="transition-opacity text-sm">Appointments</span>
         </a>
-        
+
         <!-- Messages -->
-        <a [routerLink]="'/chat'" 
-          [ngClass]="isActive('chat') ? 
-            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' : 
+        <a [routerLink]="'/chat'"
+          [ngClass]="isActive('chat') ?
+            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' :
             'text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark border-l-4 border-transparent'"
           class="group flex items-center px-4 py-3.5 font-medium rounded-r-lg transition-all">
           <i appFeather="message-circle" class="h-5 w-5 mr-3"></i>
           <span *ngIf="isSidebarOpen" class="transition-opacity text-sm">Messages</span>
         </a>
-        
+
         <!-- Health Bot (Patient Only) -->
-        <a *ngIf="isPatient" [routerLink]="'/health-bot'" 
-          [ngClass]="isActive('health-bot') ? 
-            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' : 
+        <a *ngIf="isPatient" [routerLink]="'/health-bot'"
+          [ngClass]="isActive('health-bot') ?
+            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' :
             'text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark border-l-4 border-transparent'"
           class="group flex items-center px-4 py-3.5 font-medium rounded-r-lg transition-all">
           <i appFeather="cpu" class="h-5 w-5 mr-3"></i>
           <span *ngIf="isSidebarOpen" class="transition-opacity text-sm">Health Assistant</span>
         </a>
-        
+
         <!-- Video Calls -->
-        <a [routerLink]="'/video-call'" 
-          [ngClass]="isActive('video-call') ? 
-            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' : 
+        <a [routerLink]="'/video-call'"
+          [ngClass]="isActive('video-call') ?
+            'bg-primary bg-opacity-10 text-primary dark:text-primary-dark border-l-4 border-primary dark:border-primary-dark' :
             'text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark border-l-4 border-transparent'"
           class="group flex items-center px-4 py-3.5 font-medium rounded-r-lg transition-all">
           <i appFeather="video" class="h-5 w-5 mr-3"></i>
@@ -74,21 +74,21 @@
         </a>
       </div>
     </nav>
-    
+
     <!-- User Profile - Improved styling -->
-    <div class="border-t border-border dark:border-border-dark p-4 bg-muted dark:bg-muted-dark rounded-t-lg mt-2">
+    <div class="border-t border-border dark:border-border-dark p-4 bg-muted dark:bg-gray-800 rounded-t-lg mt-2">
       <div class="flex items-center space-x-3">
         <div class="relative">
-          <img [src]="currentUser?.avatar || 'assets/default-avatar.svg'" alt="Profile" 
+          <img [src]="currentUser?.avatar || 'assets/default-avatar.svg'" alt="Profile"
             class="h-11 w-11 rounded-full object-cover border-2 border-white dark:border-gray-700 shadow-sm">
           <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-success dark:bg-success-dark border-2 border-white dark:border-gray-700"></span>
         </div>
         <div *ngIf="isSidebarOpen" class="flex-1 min-w-0 transition-opacity">
-          <p class="text-sm font-semibold text-text-primary dark:text-text-primary-dark truncate">{{ currentUser?.fullName }}</p>
-          <p class="text-xs text-text-secondary dark:text-text-secondary-dark truncate">{{ currentUser?.role === 'DOCTOR' ? 'Doctor' : 'Patient' }}</p>
+          <p class="text-sm font-semibold text-text-primary dark:text-white truncate">{{ currentUser?.fullName }}</p>
+          <p class="text-xs text-text-secondary dark:text-gray-300 truncate">{{ currentUser?.role === 'DOCTOR' ? 'Doctor' : 'Patient' }}</p>
         </div>
-        <button (click)="logout()" 
-                class="p-2 rounded-full text-text-secondary dark:text-text-secondary-dark hover:text-error hover:bg-error hover:bg-opacity-10 dark:hover:text-error-dark focus:outline-none transition-colors" 
+        <button (click)="logout()"
+                class="p-2 rounded-full text-text-secondary dark:text-text-secondary-dark hover:text-error hover:bg-error hover:bg-opacity-10 dark:hover:text-error-dark focus:outline-none transition-colors"
                 [attr.title]="isSidebarOpen ? '' : 'Logout'">
           <i appFeather="log-out" class="h-5 w-5"></i>
         </button>
@@ -99,10 +99,10 @@
   <!-- Main Content -->
   <div class="flex-1 flex flex-col overflow-hidden">
     <!-- Header - Improved with shadow and better spacing -->
-    <header class="bg-surface dark:bg-surface-dark border-b border-border dark:border-border-dark shadow-sm z-10">
+    <header class="bg-surface dark:bg-gray-800 border-b border-border dark:border-border-dark shadow-sm z-10">
       <div class="px-6 py-4 flex items-center justify-between">
         <div class="flex items-center">
-          <h1 class="text-xl font-bold text-text-primary dark:text-text-primary-dark">
+          <h1 class="text-xl font-bold text-text-primary dark:text-white">
             {{ isDoctor ? 'Doctor Dashboard' : 'Patient Dashboard' }}
           </h1>
         </div>
@@ -114,7 +114,7 @@
               <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-error dark:bg-error-dark ring-2 ring-white dark:ring-gray-800"></span>
             </button>
           </div>
-          
+
           <!-- Dark Mode Toggle -->
           <div class="flex items-center">
             <button (click)="toggleDarkMode()" class="p-2 rounded-full hover:bg-muted dark:hover:bg-muted-dark focus:outline-none transition-colors">
@@ -122,12 +122,12 @@
               <i *ngIf="isDarkMode" appFeather="moon" class="h-5 w-5 text-accent dark:text-accent-dark"></i>
             </button>
           </div>
-          
+
           <!-- Settings -->
           <button class="p-2 rounded-full text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark focus:outline-none transition-colors">
             <i appFeather="settings" class="h-5 w-5"></i>
           </button>
-          
+
           <!-- Mobile menu toggle -->
           <button class="md:hidden p-2 rounded-full text-text-secondary dark:text-text-secondary-dark hover:bg-muted dark:hover:bg-muted-dark focus:outline-none transition-colors" (click)="toggleSidebar()">
             <i appFeather="menu" class="h-5 w-5"></i>
@@ -135,7 +135,7 @@
         </div>
       </div>
     </header>
-    
+
     <!-- Content Area - Improved styling with better spacing -->
     <main class="flex-1 overflow-y-auto bg-background dark:bg-background-dark p-6 text-text-primary dark:text-text-primary-dark">
       <div class="max-w-7xl mx-auto">

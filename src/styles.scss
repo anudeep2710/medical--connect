@@ -37,30 +37,36 @@ html, body {
 :root {
   /* Primary Colors */
   --primary: #0D9488;
+  --primary-rgb: 13, 148, 136;
   --primary-hover: #0F766E;
-  
+
   /* Accent Colors */
   --accent: #3B82F6;
+  --accent-rgb: 59, 130, 246;
   --accent-hover: #2563EB;
-  
+
   /* Background Colors */
   --bg-primary: #F9FAFB;
   --bg-surface: #FFFFFF;
   --bg-muted: #F3F4F6;
-  
+
   /* Text Colors */
   --text-primary: #111827;
   --text-secondary: #6B7280;
-  
+
   /* Border Colors */
   --border: #E5E7EB;
-  
+
   /* Status Colors */
   --success: #10B981;
+  --success-rgb: 16, 185, 129;
   --error: #EF4444;
+  --error-rgb: 239, 68, 68;
   --warning: #F59E0B;
+  --warning-rgb: 245, 158, 11;
   --info: #3B82F6;
-  
+  --info-rgb: 59, 130, 246;
+
   /* UI Element Colors */
   --card-bg: var(--bg-surface);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -78,30 +84,36 @@ html, body {
 .dark {
   /* Primary Colors - Dark Mode */
   --primary: #5EEAD4;
+  --primary-rgb: 94, 234, 212;
   --primary-hover: #2DD4BF;
-  
+
   /* Accent Colors - Dark Mode */
   --accent: #60A5FA;
+  --accent-rgb: 96, 165, 250;
   --accent-hover: #3B82F6;
-  
+
   /* Background Colors - Dark Mode */
   --bg-primary: #1F2937;
   --bg-surface: #374151;
   --bg-muted: #4B5563;
-  
+
   /* Text Colors - Dark Mode */
   --text-primary: #F9FAFB;
   --text-secondary: #D1D5DB;
-  
+
   /* Border Colors - Dark Mode */
   --border: #4B5563;
-  
+
   /* Status Colors - Dark Mode */
   --success: #34D399;
+  --success-rgb: 52, 211, 153;
   --error: #F87171;
+  --error-rgb: 248, 113, 113;
   --warning: #FBBF24;
+  --warning-rgb: 251, 191, 36;
   --info: #60A5FA;
-  
+  --info-rgb: 96, 165, 250;
+
   /* UI Element Colors - Dark Mode */
   --card-bg: var(--bg-surface);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -247,9 +259,10 @@ html, body {
   display: block;
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--gray-300);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
-  background-color: white;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
   font-size: 0.875rem;
   line-height: 1.5;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -257,8 +270,8 @@ html, body {
 
 .form-input:focus {
   outline: none;
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25);
 }
 
 .form-label {
@@ -266,7 +279,7 @@ html, body {
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--gray-700);
+  color: var(--text-primary);
 }
 
 .form-error {
@@ -415,7 +428,9 @@ html, body {
 
 /* Forms */
 .input-focus-ring {
-  @apply focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none;
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
 }
 
 /* Common utilities */

@@ -1,97 +1,97 @@
 <div class="h-full flex flex-col overflow-hidden">
   <!-- Chat Header -->
-  <div class="px-4 py-3 border-b border-gray-200 bg-white flex items-center justify-between shadow-sm">
+  <div class="px-4 py-3 border-b border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark flex items-center justify-between shadow-sm">
     <div class="flex items-center">
-      <button 
-        class="lg:hidden mr-3 text-gray-500 hover:text-gray-700"
+      <button
+        class="lg:hidden mr-3 text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark"
         (click)="closeChat()">
         <i data-feather="arrow-left" class="h-5 w-5"></i>
       </button>
-      
+
       <app-avatar
         [name]="getChatParticipant()?.fullName"
         [status]="getChatParticipant()?.isOnline ? 'online' : 'offline'"
         size="md"
         class="mr-3">
       </app-avatar>
-      
+
       <div>
-        <h2 class="text-lg font-medium text-gray-900">{{ getChatParticipant()?.fullName }}</h2>
-        <p class="text-xs text-gray-500">
+        <h2 class="text-lg font-medium text-text-primary dark:text-text-primary-dark">{{ getChatParticipant()?.fullName }}</h2>
+        <p class="text-xs text-text-secondary dark:text-text-secondary-dark">
           {{ getChatParticipant()?.isOnline ? 'Online' : getChatParticipant()?.lastSeen ? 'Last seen ' + (getChatParticipant()?.lastSeen | date:'shortTime') : 'Offline' }}
         </p>
       </div>
     </div>
   </div>
-  
+
   <!-- Messages Container -->
-  <div #messageContainer class="flex-1 overflow-y-auto p-4 bg-gray-50">
+  <div #messageContainer class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-background-dark">
     <!-- Loading skeleton -->
     <div *ngIf="isLoading" class="animate-pulse space-y-4">
-      <div *ngFor="let i of [1, 2, 3, 4, 5]" 
+      <div *ngFor="let i of [1, 2, 3, 4, 5]"
           [ngClass]="{'flex justify-end': i % 2 === 0, 'flex justify-start': i % 2 !== 0}">
-        <div 
+        <div
           class="max-w-xs md:max-w-md rounded-lg px-4 py-2"
-          [ngClass]="{'bg-gray-200': i % 2 !== 0, 'bg-primary-200': i % 2 === 0}">
-          <div class="h-4 rounded" 
+          [ngClass]="{'bg-gray-200 dark:bg-gray-700': i % 2 !== 0, 'bg-primary-200 dark:bg-primary-dark dark:bg-opacity-30': i % 2 === 0}">
+          <div class="h-4 rounded"
               [ngClass]="{'w-32': i % 3 === 0, 'w-48': i % 3 === 1, 'w-24': i % 3 === 2}"></div>
         </div>
       </div>
     </div>
-    
+
     <!-- Error message -->
     <div *ngIf="error" class="flex justify-center py-4">
-      <div class="bg-danger-50 text-danger-700 px-4 py-2 rounded-md text-sm flex items-center">
+      <div class="bg-danger-50 dark:bg-error-dark dark:bg-opacity-20 text-danger-700 dark:text-error-dark px-4 py-2 rounded-md text-sm flex items-center">
         <i data-feather="alert-circle" class="h-4 w-4 mr-2"></i>
         {{ error }}
-        <button 
-          class="ml-2 text-danger-700 hover:text-danger-800 underline" 
+        <button
+          class="ml-2 text-danger-700 dark:text-error-dark hover:text-danger-800 dark:hover:text-error-dark underline"
           (click)="loadMessages()">
           Try Again
         </button>
       </div>
     </div>
-    
+
     <!-- Empty state -->
     <div *ngIf="!isLoading && !error && messages.length === 0" class="h-full flex items-center justify-center p-6">
       <div class="text-center">
-        <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 mb-4">
-          <i data-feather="message-circle" class="h-6 w-6 text-primary-600"></i>
+        <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 dark:bg-primary-dark dark:bg-opacity-20 mb-4">
+          <i data-feather="message-circle" class="h-6 w-6 text-primary dark:text-primary-dark"></i>
         </div>
-        <h3 class="text-sm font-medium text-gray-900">No messages yet</h3>
-        <p class="mt-1 text-sm text-gray-500">
+        <h3 class="text-sm font-medium text-text-primary dark:text-text-primary-dark">No messages yet</h3>
+        <p class="mt-1 text-sm text-text-secondary dark:text-text-secondary-dark">
           Start the conversation by sending a message below.
         </p>
       </div>
     </div>
-    
+
     <!-- Messages -->
     <div *ngIf="!isLoading && messages.length > 0" class="space-y-3">
       <ng-container *ngFor="let message of messages; let i = index">
         <!-- Date separator -->
         <div *ngIf="shouldShowMessageDate(i)" class="flex justify-center my-4">
-          <div class="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-500">
+          <div class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-xs text-text-secondary dark:text-text-secondary-dark">
             {{ formatMessageDate(message.createdAt) }}
           </div>
         </div>
-        
+
         <!-- Message bubble -->
-        <div 
+        <div
           [ngClass]="{
             'flex justify-end': isCurrentUserMessage(message),
             'flex justify-start': !isCurrentUserMessage(message)
           }">
-          <div 
+          <div
             class="max-w-xs md:max-w-md rounded-lg px-4 py-2 shadow-sm"
             [ngClass]="{
-              'bg-primary-100 text-primary-900 rounded-tr-none': isCurrentUserMessage(message),
-              'bg-white text-gray-900 rounded-tl-none': !isCurrentUserMessage(message)
+              'bg-primary-100 dark:bg-primary-dark dark:bg-opacity-20 text-primary-900 dark:text-text-primary-dark rounded-tr-none': isCurrentUserMessage(message),
+              'bg-white dark:bg-surface-dark text-text-primary dark:text-text-primary-dark rounded-tl-none': !isCurrentUserMessage(message)
             }">
             <div class="text-sm">{{ message.text }}</div>
             <div class="text-xs mt-1 text-right"
                 [ngClass]="{
-                  'text-primary-500': isCurrentUserMessage(message),
-                  'text-gray-500': !isCurrentUserMessage(message)
+                  'text-primary dark:text-primary-dark': isCurrentUserMessage(message),
+                  'text-text-secondary dark:text-text-secondary-dark': !isCurrentUserMessage(message)
                 }">
               {{ formatMessageTime(message.createdAt) }}
             </div>
@@ -100,20 +100,20 @@
       </ng-container>
     </div>
   </div>
-  
+
   <!-- Message Input -->
-  <div class="p-3 border-t border-gray-200 bg-white">
+  <div class="p-3 border-t border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark">
     <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="flex">
-      <input 
-        type="text" 
+      <input
+        type="text"
         formControlName="message"
         placeholder="Type a message..."
-        class="flex-1 rounded-l-lg border-gray-300 focus:ring-primary-500 focus:border-primary-500" />
-      
-      <button 
+        class="flex-1 rounded-l-lg border-gray-300 dark:border-border-dark dark:bg-muted-dark dark:text-text-primary-dark focus:ring-primary-500 dark:focus:ring-primary-dark focus:border-primary-500 dark:focus:border-primary-dark" />
+
+      <button
         type="submit"
         [disabled]="messageForm.invalid || isSending"
-        class="bg-primary-600 text-white rounded-r-lg px-4 py-2 hover:bg-primary-700 focus:outline-none"
+        class="bg-primary dark:bg-primary-dark text-white dark:text-background-dark rounded-r-lg px-4 py-2 hover:bg-primary-hover dark:hover:bg-primary-dark-hover focus:outline-none"
         [ngClass]="{'opacity-70 cursor-not-allowed': messageForm.invalid || isSending}">
         <div *ngIf="isSending" class="inline-block animate-spin h-4 w-4 border-2 border-t-transparent border-white rounded-full"></div>
         <i *ngIf="!isSending" data-feather="send" class="h-4 w-4"></i>

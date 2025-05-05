@@ -39,20 +39,20 @@ export class PatientDashboardComponent implements OnInit {
   healthTips: HealthTip[] = [];
   isLoading = true;
   error = '';
-  
+
   constructor(
     private appointmentService: AppointmentService,
     private userService: UserService,
     private router: Router
   ) {}
-  
+
   ngOnInit() {
     this.loadDashboardData();
   }
-  
+
   loadDashboardData() {
     this.isLoading = true;
-    
+
     // Fetch upcoming appointments and health statistics
     forkJoin({
       appointments: this.appointmentService.getAppointments('CONFIRMED').pipe(
@@ -80,7 +80,7 @@ export class PatientDashboardComponent implements OnInit {
       }
     });
   }
-  
+
   mapHealthStats(data: any) {
     if (data && data.stats) {
       this.healthStats = [
@@ -91,7 +91,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: data.stats.heartRate?.trend || 'stable',
           trendValue: data.stats.heartRate?.trendValue || '0%',
           icon: 'heart',
-          color: 'text-danger-500'
+          color: 'text-error dark:text-error-dark'
         },
         {
           title: 'Blood Pressure',
@@ -100,7 +100,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: data.stats.bloodPressure?.trend || 'stable',
           trendValue: data.stats.bloodPressure?.trendValue || '0%',
           icon: 'activity',
-          color: 'text-primary-500'
+          color: 'text-primary dark:text-primary-dark'
         },
         {
           title: 'Steps',
@@ -109,7 +109,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: data.stats.steps?.trend || 'up',
           trendValue: data.stats.steps?.trendValue || '+12%',
           icon: 'trending-up',
-          color: 'text-success-500'
+          color: 'text-success dark:text-success-dark'
         },
         {
           title: 'Sleep',
@@ -118,7 +118,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: data.stats.sleep?.trend || 'down',
           trendValue: data.stats.sleep?.trendValue || '-5%',
           icon: 'moon',
-          color: 'text-secondary-500'
+          color: 'text-accent dark:text-accent-dark'
         }
       ];
     } else {
@@ -131,7 +131,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: 'stable',
           trendValue: '0%',
           icon: 'heart',
-          color: 'text-danger-500'
+          color: 'text-error dark:text-error-dark'
         },
         {
           title: 'Blood Pressure',
@@ -140,7 +140,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: 'stable',
           trendValue: '0%',
           icon: 'activity',
-          color: 'text-primary-500'
+          color: 'text-primary dark:text-primary-dark'
         },
         {
           title: 'Steps',
@@ -149,7 +149,7 @@ export class PatientDashboardComponent implements OnInit {
           trend: 'up',
           trendValue: '+12%',
           icon: 'trending-up',
-          color: 'text-success-500'
+          color: 'text-success dark:text-success-dark'
         },
         {
           title: 'Sleep',
@@ -158,12 +158,12 @@ export class PatientDashboardComponent implements OnInit {
           trend: 'down',
           trendValue: '-5%',
           icon: 'moon',
-          color: 'text-secondary-500'
+          color: 'text-accent dark:text-accent-dark'
         }
       ];
     }
   }
-  
+
   generateHealthTips() {
     this.healthTips = [
       {
@@ -186,21 +186,21 @@ export class PatientDashboardComponent implements OnInit {
       }
     ];
   }
-  
+
   bookAppointment() {
     this.router.navigate(['/appointments/book']);
   }
-  
+
   viewAllAppointments() {
     this.router.navigate(['/appointments']);
   }
-  
+
   joinCall(appointment: Appointment) {
-    this.router.navigate(['/video-call'], { 
-      queryParams: { appointmentId: appointment.id } 
+    this.router.navigate(['/video-call'], {
+      queryParams: { appointmentId: appointment.id }
     });
   }
-  
+
   getTrendIcon(trend: string): string {
     switch (trend) {
       case 'up': return 'trending-up';
@@ -208,20 +208,20 @@ export class PatientDashboardComponent implements OnInit {
       default: return 'minus';
     }
   }
-  
+
   getTrendClass(trend: string): string {
     switch (trend) {
-      case 'up': return 'text-success-500';
-      case 'down': return 'text-danger-500';
-      default: return 'text-gray-500';
+      case 'up': return 'text-success-500 dark:text-success-dark';
+      case 'down': return 'text-danger-500 dark:text-error-dark';
+      default: return 'text-text-secondary dark:text-text-secondary-dark';
     }
   }
-  
+
   getImportanceClass(importance: string): string {
     switch (importance) {
-      case 'high': return 'bg-danger-100 text-danger-800 border-danger-200';
-      case 'medium': return 'bg-warning-100 text-warning-800 border-warning-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'high': return 'bg-danger-100 dark:bg-error-dark dark:bg-opacity-20 text-danger-800 dark:text-error-dark border-danger-200 dark:border-error-dark';
+      case 'medium': return 'bg-warning-100 dark:bg-warning-dark dark:bg-opacity-20 text-warning-800 dark:text-warning-dark border-warning-200 dark:border-warning-dark';
+      default: return 'bg-muted dark:bg-muted-dark text-text-primary dark:text-text-primary-dark border-border dark:border-border-dark';
     }
   }
 }

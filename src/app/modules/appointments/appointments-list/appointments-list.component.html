@@ -1,135 +1,135 @@
 <div>
   <!-- Page title and actions -->
   <div class="mb-6 sm:flex sm:items-center sm:justify-between">
-    <h1 class="text-2xl font-bold text-gray-900">Appointments</h1>
+    <h1 class="text-2xl font-bold text-text-primary dark:text-text-primary-dark">Appointments</h1>
     <div class="mt-3 sm:mt-0 flex space-x-2">
-      <app-button 
-        variant="outline" 
-        icon="calendar" 
+      <app-button
+        variant="outline"
+        icon="calendar"
         (clicked)="navigateToCalendar()">
         Calendar View
       </app-button>
-      
-      <app-button 
-        variant="primary" 
-        icon="plus-circle" 
+
+      <app-button
+        variant="primary"
+        icon="plus-circle"
         (clicked)="bookAppointment()">
         Book Appointment
       </app-button>
     </div>
   </div>
-  
+
   <!-- Error Alert -->
-  <div *ngIf="error" class="mb-6 bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg">
+  <div *ngIf="error" class="mb-6 bg-danger-50 dark:bg-error-dark dark:bg-opacity-20 border border-danger-200 dark:border-error-dark text-danger-700 dark:text-error-dark px-4 py-3 rounded-lg">
     <p>{{ error }}</p>
   </div>
-  
+
   <!-- Tab Navigation -->
-  <div class="border-b border-gray-200 mb-5">
+  <div class="border-b border-gray-200 dark:border-border-dark mb-5">
     <nav class="-mb-px flex space-x-8">
-      <button 
+      <button
         (click)="setActiveTab('upcoming')"
         class="pb-3 px-1 font-medium text-sm border-b-2 whitespace-nowrap focus:outline-none"
         [ngClass]="{
-          'border-primary-500 text-primary-600': activeTab === 'upcoming',
-          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'upcoming'
+          'border-primary-500 text-primary dark:text-primary-dark dark:border-primary-dark': activeTab === 'upcoming',
+          'border-transparent text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark hover:border-gray-300 dark:hover:border-gray-600': activeTab !== 'upcoming'
         }">
         Upcoming
       </button>
-      
-      <button 
+
+      <button
         (click)="setActiveTab('past')"
         class="pb-3 px-1 font-medium text-sm border-b-2 whitespace-nowrap focus:outline-none"
         [ngClass]="{
-          'border-primary-500 text-primary-600': activeTab === 'past',
-          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'past'
+          'border-primary-500 text-primary dark:text-primary-dark dark:border-primary-dark': activeTab === 'past',
+          'border-transparent text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark hover:border-gray-300 dark:hover:border-gray-600': activeTab !== 'past'
         }">
         Past
       </button>
-      
-      <button 
+
+      <button
         (click)="setActiveTab('all')"
         class="pb-3 px-1 font-medium text-sm border-b-2 whitespace-nowrap focus:outline-none"
         [ngClass]="{
-          'border-primary-500 text-primary-600': activeTab === 'all',
-          'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'all'
+          'border-primary-500 text-primary dark:text-primary-dark dark:border-primary-dark': activeTab === 'all',
+          'border-transparent text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark hover:border-gray-300 dark:hover:border-gray-600': activeTab !== 'all'
         }">
         All
       </button>
     </nav>
   </div>
-  
+
   <!-- Filters -->
   <div class="mb-6 flex flex-wrap gap-2">
     <!-- Status filter -->
     <div class="dropdown">
-      <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 hover:bg-gray-50 focus:outline-none">
+      <button class="px-3 py-2 bg-white dark:bg-surface-dark border border-gray-300 dark:border-border-dark rounded-md shadow-sm text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-50 dark:hover:bg-muted-dark focus:outline-none">
         Status: {{ statusFilter === 'ALL' ? 'All' : statusFilter.toLowerCase() }}
         <i data-feather="chevron-down" class="inline-block h-4 w-4 ml-1"></i>
       </button>
-      <div class="dropdown-menu absolute z-10 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden">
+      <div class="dropdown-menu absolute z-10 mt-1 w-48 bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-md shadow-lg hidden">
         <div class="py-1">
-          <button (click)="setStatusFilter('ALL')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">All</button>
-          <button (click)="setStatusFilter('CONFIRMED')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Confirmed</button>
-          <button (click)="setStatusFilter('PENDING')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Pending</button>
-          <button (click)="setStatusFilter('COMPLETED')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Completed</button>
-          <button (click)="setStatusFilter('CANCELLED')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Cancelled</button>
+          <button (click)="setStatusFilter('ALL')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">All</button>
+          <button (click)="setStatusFilter('CONFIRMED')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">Confirmed</button>
+          <button (click)="setStatusFilter('PENDING')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">Pending</button>
+          <button (click)="setStatusFilter('COMPLETED')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">Completed</button>
+          <button (click)="setStatusFilter('CANCELLED')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">Cancelled</button>
         </div>
       </div>
     </div>
-    
+
     <!-- Type filter -->
     <div class="dropdown">
-      <button class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 hover:bg-gray-50 focus:outline-none">
+      <button class="px-3 py-2 bg-white dark:bg-surface-dark border border-gray-300 dark:border-border-dark rounded-md shadow-sm text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-50 dark:hover:bg-muted-dark focus:outline-none">
         Type: {{ typeFilter === 'ALL' ? 'All' : (typeFilter === 'VIDEO_CALL' ? 'Video Call' : 'In Person') }}
         <i data-feather="chevron-down" class="inline-block h-4 w-4 ml-1"></i>
       </button>
-      <div class="dropdown-menu absolute z-10 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden">
+      <div class="dropdown-menu absolute z-10 mt-1 w-48 bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-md shadow-lg hidden">
         <div class="py-1">
-          <button (click)="setTypeFilter('ALL')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">All</button>
-          <button (click)="setTypeFilter('VIDEO_CALL')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Video Call</button>
-          <button (click)="setTypeFilter('IN_PERSON')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">In Person</button>
+          <button (click)="setTypeFilter('ALL')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">All</button>
+          <button (click)="setTypeFilter('VIDEO_CALL')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">Video Call</button>
+          <button (click)="setTypeFilter('IN_PERSON')" class="block px-4 py-2 text-sm text-text-primary dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-muted-dark w-full text-left">In Person</button>
         </div>
       </div>
     </div>
   </div>
-  
+
   <!-- Loading skeleton -->
   <div *ngIf="isLoading" class="space-y-4">
-    <div *ngFor="let i of [1, 2, 3, 4]" class="bg-white border border-gray-200 rounded-lg p-4 animate-pulse">
+    <div *ngFor="let i of [1, 2, 3, 4]" class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-lg p-4 animate-pulse">
       <div class="flex items-start">
-        <div class="h-12 w-12 bg-gray-200 rounded-full mr-4"></div>
+        <div class="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-full mr-4"></div>
         <div class="flex-1">
-          <div class="h-5 bg-gray-200 rounded mb-2 w-1/4"></div>
-          <div class="h-4 bg-gray-200 rounded mb-4 w-3/4"></div>
-          <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-1/4"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-4 w-3/4"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
         </div>
-        <div class="w-24 h-8 bg-gray-200 rounded"></div>
+        <div class="w-24 h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
       </div>
     </div>
   </div>
-  
+
   <!-- Empty state -->
-  <div *ngIf="!isLoading && filteredAppointments.length === 0" class="bg-white border border-gray-200 rounded-lg p-6 text-center">
-    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100">
-      <i data-feather="calendar" class="h-6 w-6 text-primary-600"></i>
+  <div *ngIf="!isLoading && filteredAppointments.length === 0" class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark rounded-lg p-6 text-center">
+    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 dark:bg-primary-dark dark:bg-opacity-20">
+      <i data-feather="calendar" class="h-6 w-6 text-primary dark:text-primary-dark"></i>
     </div>
-    <h3 class="mt-2 text-sm font-medium text-gray-900">No appointments found</h3>
-    <p class="mt-1 text-sm text-gray-500">
-      {{ activeTab === 'upcoming' ? 'You don\'t have any upcoming appointments.' : 
-         activeTab === 'past' ? 'You don\'t have any past appointments.' : 
+    <h3 class="mt-2 text-sm font-medium text-text-primary dark:text-text-primary-dark">No appointments found</h3>
+    <p class="mt-1 text-sm text-text-secondary dark:text-text-secondary-dark">
+      {{ activeTab === 'upcoming' ? 'You don\'t have any upcoming appointments.' :
+         activeTab === 'past' ? 'You don\'t have any past appointments.' :
          'No appointments match your current filters.' }}
     </p>
     <div class="mt-6">
-      <app-button 
-        variant="primary" 
-        icon="plus-circle" 
+      <app-button
+        variant="primary"
+        icon="plus-circle"
         (clicked)="bookAppointment()">
         Book Appointment
       </app-button>
     </div>
   </div>
-  
+
   <!-- Appointment List -->
   <div *ngIf="!isLoading && filteredAppointments.length > 0" class="space-y-4">
     <app-card *ngFor="let appointment of filteredAppointments" [shadow]="'sm'">
@@ -141,21 +141,21 @@
             size="lg"
             class="mr-4 flex-shrink-0 hidden sm:block">
           </app-avatar>
-          
+
           <div>
             <div class="flex items-center">
-              <h3 class="text-lg font-medium text-gray-900">
+              <h3 class="text-lg font-medium text-text-primary dark:text-text-primary-dark">
                 {{ currentUser?.role === 'PATIENT' ? 'Dr. ' + appointment.doctor.fullName : appointment.patient.fullName }}
               </h3>
-              
+
               <div class="flex space-x-2 ml-3">
-                <span 
+                <span
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
                   [ngClass]="getAppointmentStatusClass(appointment.status)">
                   {{ appointment.status.toLowerCase() }}
                 </span>
-                
-                <span 
+
+                <span
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
                   [ngClass]="getAppointmentTypeClass(appointment.type)">
                   <i [dynamicFeather]="appointment.type === 'VIDEO_CALL' ? 'video' : 'map-pin'" class="mr-1 h-3 w-3"></i>
@@ -163,57 +163,57 @@
                 </span>
               </div>
             </div>
-            
-            <p *ngIf="currentUser?.role === 'PATIENT'" class="text-sm text-gray-500">
+
+            <p *ngIf="currentUser?.role === 'PATIENT'" class="text-sm text-text-secondary dark:text-text-secondary-dark">
               {{ appointment.doctor.specialization }}
             </p>
-            
-            <div class="mt-2 flex items-center text-sm text-gray-500">
-              <i appFeather="calendar" class="mr-1.5 h-4 w-4 text-gray-400"></i>
+
+            <div class="mt-2 flex items-center text-sm text-text-secondary dark:text-text-secondary-dark">
+              <i appFeather="calendar" class="mr-1.5 h-4 w-4 text-text-secondary dark:text-text-secondary-dark"></i>
               <span>{{ appointment.date | date:'mediumDate' }}</span>
-              <i appFeather="clock" class="ml-4 mr-1.5 h-4 w-4 text-gray-400"></i>
+              <i appFeather="clock" class="ml-4 mr-1.5 h-4 w-4 text-text-secondary dark:text-text-secondary-dark"></i>
               <span>{{ formatTime(appointment.startTime) }} - {{ formatTime(appointment.endTime) }}</span>
             </div>
-            
-            <div *ngIf="appointment.reasonForVisit" class="mt-1 text-sm text-gray-600">
+
+            <div *ngIf="appointment.reasonForVisit" class="mt-1 text-sm text-text-secondary dark:text-text-secondary-dark">
               <span class="font-medium">Reason:</span> {{ appointment.reasonForVisit }}
             </div>
           </div>
         </div>
-        
+
         <!-- Right: Actions -->
         <div class="mt-4 sm:mt-0 flex flex-wrap gap-2 justify-end">
-          <app-button 
+          <app-button
             *ngIf="appointment.type === 'VIDEO_CALL' && appointment.status === 'CONFIRMED' && !isPastAppointment(appointment)"
-            variant="primary" 
+            variant="primary"
             size="sm"
-            icon="video" 
+            icon="video"
             (clicked)="joinCall(appointment)">
             Join Call
           </app-button>
-          
-          <app-button 
-            variant="outline" 
+
+          <app-button
+            variant="outline"
             size="sm"
-            icon="eye" 
+            icon="eye"
             (clicked)="viewDetails(appointment)">
             View
           </app-button>
-          
-          <app-button 
+
+          <app-button
             *ngIf="appointment.status !== 'CANCELLED' && appointment.status !== 'COMPLETED' && !isPastAppointment(appointment)"
-            variant="outline" 
+            variant="outline"
             size="sm"
-            icon="edit-2" 
+            icon="edit-2"
             (clicked)="rescheduleAppointment(appointment)">
             Reschedule
           </app-button>
-          
-          <app-button 
+
+          <app-button
             *ngIf="appointment.status !== 'CANCELLED' && appointment.status !== 'COMPLETED' && !isPastAppointment(appointment)"
-            variant="outline" 
+            variant="outline"
             size="sm"
-            icon="x" 
+            icon="x"
             (clicked)="showCancelConfirmation(appointment)">
             Cancel
           </app-button>
@@ -221,13 +221,13 @@
       </div>
     </app-card>
   </div>
-  
+
   <!-- Appointment Details Modal -->
-  <app-modal 
-    [isOpen]="showDetailsModal" 
+  <app-modal
+    [isOpen]="showDetailsModal"
     [title]="'Appointment Details'"
     (closed)="closeDetailsModal()">
-    
+
     <div *ngIf="selectedAppointment">
       <div class="mb-6 text-center">
         <app-avatar
@@ -235,42 +235,42 @@
           size="xl"
           class="mx-auto mb-3">
         </app-avatar>
-        
-        <h3 class="text-lg font-medium text-gray-900">
+
+        <h3 class="text-lg font-medium text-text-primary dark:text-text-primary-dark">
           {{ currentUser?.role === 'PATIENT' ? 'Dr. ' + selectedAppointment.doctor.fullName : selectedAppointment.patient.fullName }}
         </h3>
-        
-        <p *ngIf="currentUser?.role === 'PATIENT'" class="text-sm text-gray-500">
+
+        <p *ngIf="currentUser?.role === 'PATIENT'" class="text-sm text-text-secondary dark:text-text-secondary-dark">
           {{ selectedAppointment.doctor.specialization }}
         </p>
       </div>
-      
+
       <div class="mb-6 grid grid-cols-2 gap-4">
         <div>
-          <h4 class="text-xs font-medium text-gray-500 uppercase">Date</h4>
-          <p class="mt-1 text-sm text-gray-900">{{ selectedAppointment.date | date:'mediumDate' }}</p>
+          <h4 class="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase">Date</h4>
+          <p class="mt-1 text-sm text-text-primary dark:text-text-primary-dark">{{ selectedAppointment.date | date:'mediumDate' }}</p>
         </div>
-        
+
         <div>
-          <h4 class="text-xs font-medium text-gray-500 uppercase">Time</h4>
-          <p class="mt-1 text-sm text-gray-900">{{ formatTime(selectedAppointment.startTime) }} - {{ formatTime(selectedAppointment.endTime) }}</p>
+          <h4 class="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase">Time</h4>
+          <p class="mt-1 text-sm text-text-primary dark:text-text-primary-dark">{{ formatTime(selectedAppointment.startTime) }} - {{ formatTime(selectedAppointment.endTime) }}</p>
         </div>
-        
+
         <div>
-          <h4 class="text-xs font-medium text-gray-500 uppercase">Status</h4>
+          <h4 class="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase">Status</h4>
           <p class="mt-1">
-            <span 
+            <span
               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
               [ngClass]="getAppointmentStatusClass(selectedAppointment.status)">
               {{ selectedAppointment.status.toLowerCase() }}
             </span>
           </p>
         </div>
-        
+
         <div>
-          <h4 class="text-xs font-medium text-gray-500 uppercase">Type</h4>
+          <h4 class="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase">Type</h4>
           <p class="mt-1">
-            <span 
+            <span
               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
               [ngClass]="getAppointmentTypeClass(selectedAppointment.type)">
               <i [dynamicFeather]="selectedAppointment.type === 'VIDEO_CALL' ? 'video' : 'map-pin'" class="mr-1 h-3 w-3"></i>
@@ -279,76 +279,76 @@
           </p>
         </div>
       </div>
-      
+
       <div *ngIf="selectedAppointment.reasonForVisit" class="mb-6">
-        <h4 class="text-xs font-medium text-gray-500 uppercase">Reason for Visit</h4>
-        <p class="mt-1 text-sm text-gray-900">{{ selectedAppointment.reasonForVisit }}</p>
+        <h4 class="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase">Reason for Visit</h4>
+        <p class="mt-1 text-sm text-text-primary dark:text-text-primary-dark">{{ selectedAppointment.reasonForVisit }}</p>
       </div>
-      
+
       <div *ngIf="selectedAppointment.notes" class="mb-6">
-        <h4 class="text-xs font-medium text-gray-500 uppercase">Additional Notes</h4>
-        <p class="mt-1 text-sm text-gray-900">{{ selectedAppointment.notes }}</p>
+        <h4 class="text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase">Additional Notes</h4>
+        <p class="mt-1 text-sm text-text-primary dark:text-text-primary-dark">{{ selectedAppointment.notes }}</p>
       </div>
-      
+
       <div class="mt-8 flex flex-wrap gap-3 justify-center">
-        <app-button 
+        <app-button
           *ngIf="selectedAppointment.type === 'VIDEO_CALL' && selectedAppointment.status === 'CONFIRMED' && !isPastAppointment(selectedAppointment)"
           variant="primary"
-          icon="video" 
+          icon="video"
           (clicked)="joinCall(selectedAppointment)">
           Join Video Call
         </app-button>
-        
-        <app-button 
+
+        <app-button
           *ngIf="selectedAppointment.status !== 'CANCELLED' && selectedAppointment.status !== 'COMPLETED' && !isPastAppointment(selectedAppointment)"
           variant="outline"
-          icon="edit-2" 
+          icon="edit-2"
           (clicked)="rescheduleAppointment(selectedAppointment)">
           Reschedule
         </app-button>
-        
-        <app-button 
+
+        <app-button
           *ngIf="selectedAppointment.status !== 'CANCELLED' && selectedAppointment.status !== 'COMPLETED' && !isPastAppointment(selectedAppointment)"
           variant="outline"
-          icon="x" 
+          icon="x"
           (clicked)="showCancelConfirmation(selectedAppointment)">
           Cancel
         </app-button>
       </div>
     </div>
-    
+
     <div *ngIf="!selectedAppointment" class="text-center py-8">
-      <p class="text-gray-500">Loading appointment details...</p>
+      <p class="text-text-secondary dark:text-text-secondary-dark">Loading appointment details...</p>
     </div>
   </app-modal>
-  
+
   <!-- Cancel Confirmation Modal -->
-  <app-modal 
-    [isOpen]="showCancelModal" 
+  <app-modal
+    [isOpen]="showCancelModal"
     [title]="'Cancel Appointment'"
     (closed)="closeCancelModal()">
-    
+
     <div *ngIf="selectedAppointment">
-      <p class="text-gray-700 mb-4">
-        Are you sure you want to cancel your appointment with 
-        <strong>{{ currentUser?.role === 'PATIENT' ? 'Dr. ' + selectedAppointment.doctor.fullName : selectedAppointment.patient.fullName }}</strong> 
-        on <strong>{{ selectedAppointment.date | date:'mediumDate' }}</strong> at 
+      <p class="text-text-primary dark:text-text-primary-dark mb-4">
+        Are you sure you want to cancel your appointment with
+        <strong>{{ currentUser?.role === 'PATIENT' ? 'Dr. ' + selectedAppointment.doctor.fullName : selectedAppointment.patient.fullName }}</strong>
+        on <strong>{{ selectedAppointment.date | date:'mediumDate' }}</strong> at
         <strong>{{ formatTime(selectedAppointment.startTime) }}</strong>?
       </p>
-      
-      <p class="text-gray-500 text-sm mb-6">
-        This action cannot be undone. If you need to see this {{ currentUser?.role === 'PATIENT' ? 'doctor' : 'patient' }} 
+
+      <p class="text-text-secondary dark:text-text-secondary-dark text-sm mb-6">
+        This action cannot be undone. If you need to see this {{ currentUser?.role === 'PATIENT' ? 'doctor' : 'patient' }}
         in the future, you'll need to book a new appointment.
       </p>
-      
+
       <div class="flex justify-end space-x-3">
-        <app-button 
+        <app-button
           variant="outline"
           (clicked)="closeCancelModal()">
           Keep Appointment
         </app-button>
-        
-        <app-button 
+
+        <app-button
           variant="danger"
           (clicked)="cancelAppointment()">
           Cancel Appointment

@@ -1,38 +1,38 @@
-<div *ngIf="isOpen" 
+<div *ngIf="isOpen"
      class="fixed inset-0 z-{{zIndex}} overflow-y-auto"
-     aria-labelledby="modal-title" 
-     role="dialog" 
+     aria-labelledby="modal-title"
+     role="dialog"
      aria-modal="true">
-  
+
   <!-- Background backdrop -->
-  <div [@backdropAnimation]="animationState" 
+  <div [@backdropAnimation]="animationState"
        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
        (click)="onBackdropClick()"></div>
-  
+
   <div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
     <!-- Modal panel -->
     <div [@modalAnimation]="animationState"
          (@modalAnimation.done)="onAnimationDone($event)"
-         class="relative bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 w-full {{modalSizeClass}}"
+         class="relative bg-white dark:bg-surface-dark rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 w-full {{modalSizeClass}}"
          (click)="onModalClick($event)">
-      
+
       <!-- Header -->
-      <div *ngIf="title" class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-        <h3 class="text-lg font-medium text-gray-900" id="modal-title">{{ title }}</h3>
-        <button *ngIf="!hideCloseButton" 
-                type="button" 
-                class="text-gray-400 hover:text-gray-500 focus:outline-none"
+      <div *ngIf="title" class="px-4 py-3 border-b border-gray-200 dark:border-border-dark flex items-center justify-between">
+        <h3 class="text-lg font-medium text-text-primary dark:text-text-primary-dark" id="modal-title">{{ title }}</h3>
+        <button *ngIf="!hideCloseButton"
+                type="button"
+                class="text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark focus:outline-none"
                 (click)="close()">
           <span class="sr-only">Close</span>
           <i data-feather="x" class="h-5 w-5"></i>
         </button>
       </div>
-      
+
       <!-- Content -->
       <div class="p-4 sm:p-6">
         <ng-content></ng-content>
       </div>
-      
+
       <!-- Footer -->
       <div class="footer">
         <ng-content select="[modal-footer]"></ng-content>

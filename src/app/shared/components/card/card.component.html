@@ -1,53 +1,53 @@
 <div [ngClass]="[
-  'bg-white rounded-xl overflow-hidden transition-all duration-200',
+  'bg-white dark:bg-surface-dark rounded-xl overflow-hidden transition-all duration-200',
   shadow !== 'none' ? 'shadow-' + shadow : '',
-  bordered ? 'border border-gray-200' : '',
+  bordered ? 'border border-gray-200 dark:border-border-dark' : '',
   hover ? 'hover:shadow-md' : ''
 ]">
   <!-- Standard Header -->
-  <div *ngIf="title || subtitle || icon" 
+  <div *ngIf="title || subtitle || icon"
        [ngClass]="[
-         'flex items-center justify-between px-5 py-4', 
-         headerBorder ? 'border-b border-gray-100' : ''
+         'flex items-center justify-between px-5 py-4',
+         headerBorder ? 'border-b border-gray-100 dark:border-border-dark' : ''
        ]">
     <div class="flex items-center space-x-3">
       <div *ngIf="icon" [ngClass]="[
         'flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg',
-        'bg-' + iconBg + '-100 text-' + iconBg + '-600'
+        'bg-' + iconBg + '-100 dark:bg-' + iconBg + '-dark dark:bg-opacity-20 text-' + iconBg + '-600 dark:text-' + iconBg + '-dark'
       ]">
         <i [appFeather]="icon" class="h-5 w-5"></i>
       </div>
-      
+
       <div>
-        <h3 *ngIf="title" class="text-lg font-semibold text-gray-800 leading-tight">{{ title }}</h3>
-        <p *ngIf="subtitle" class="text-sm text-gray-500 mt-0.5">{{ subtitle }}</p>
+        <h3 *ngIf="title" class="text-lg font-semibold text-text-primary dark:text-text-primary-dark leading-tight">{{ title }}</h3>
+        <p *ngIf="subtitle" class="text-sm text-text-secondary dark:text-text-secondary-dark mt-0.5">{{ subtitle }}</p>
       </div>
     </div>
-    
+
     <ng-content select="[card-actions]"></ng-content>
   </div>
-  
+
   <!-- Custom Header -->
-  <div *ngIf="headerTemplate" 
+  <div *ngIf="headerTemplate"
        [ngClass]="[
-         'px-5 py-4', 
-         headerBorder ? 'border-b border-gray-100' : ''
+         'px-5 py-4',
+         headerBorder ? 'border-b border-gray-100 dark:border-border-dark' : ''
        ]">
     <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
   </div>
-  
+
   <!-- Card Body -->
   <div [ngClass]="[
     bodyPadding === 'none' ? '' : 'p-' + (bodyPadding === 'sm' ? '3' : bodyPadding === 'md' ? '5' : '6')
   ]">
     <ng-content></ng-content>
   </div>
-  
+
   <!-- Card Footer -->
-  <div *ngIf="footerTemplate" 
+  <div *ngIf="footerTemplate"
        [ngClass]="[
-         'px-5 py-4', 
-         footerBorder ? 'border-t border-gray-100' : ''
+         'px-5 py-4',
+         footerBorder ? 'border-t border-gray-100 dark:border-border-dark' : ''
        ]">
     <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
   </div>
